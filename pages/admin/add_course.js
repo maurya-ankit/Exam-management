@@ -2,7 +2,35 @@ import Link from 'next/link';
 import React from 'react';
 import { Row, Col, Card, CardTitle, Form, FormGroup, Label, Input, Button, CardBody, Table, CardFooter, Pagination, PaginationItem, PaginationLink, Breadcrumb, BreadcrumbItem } from 'reactstrap'
 
+
+const courses = [
+    {
+        courseCode: 'CSE 101',
+        courseName: 'Introduction to Computer Science',
+        credit: 3
+    },
+    {
+        courseCode: 'CSE 102',
+        courseName: 'Introduction to Computer Science',
+        credit: 3
+    },
+    {
+        courseCode: 'CSE 103',
+        courseName: 'Introduction to Computer Science',
+        credit: 3
+    },
+    {
+        courseCode: 'CSE 104',
+        courseName: 'Introduction to Computer Science',
+        credit: 3
+    },
+]
+
 function AddCourse() {
+    function handleSubmit(e) {
+        e.preventDefault();
+        console.log("Form submitted");
+    }
     return (
         <div>
             <Breadcrumb>
@@ -20,7 +48,7 @@ function AddCourse() {
                     Add Course
                 </CardTitle>
                 <CardBody>
-                    <Form className=''>
+                    <Form className='' onSubmit={handleSubmit}>
                         <Row>
                             <Col>
                                 <FormGroup>
@@ -58,7 +86,7 @@ function AddCourse() {
 
                             </Col>
                         </Row>
-                        <Button>Submit</Button>
+                        <Button className='float-end' type="submit">Submit</Button>
                     </Form>
                 </CardBody>
             </Card>
@@ -68,34 +96,22 @@ function AddCourse() {
                     Course List
                 </CardTitle>
                 <CardBody className="">
-                    <Table bordered striped>
+                    <Table striped>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Course Credit</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            {courses.map((course, index) => (
+                                <tr key={index}>
+                                    <td>{course.courseCode}</td>
+                                    <td>{course.courseName}</td>
+                                    <td>{course.credit}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </Table>
                 </CardBody>

@@ -62,7 +62,7 @@ function GradeRange() {
     const [gradeRanges, setGradeRanges] = useState(gradeOptions);
     function handleSubmit(e) {
         e.preventDefault();
-        alert("submit");
+        console.log("Form submitted");
     }
     return (
         <div>
@@ -176,7 +176,7 @@ function GradeRange() {
                                 </Col>
                             </Row>
                         ))}
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit" className="float-end">Submit</Button>
                     </Form>
                 </CardBody>
             </Card>

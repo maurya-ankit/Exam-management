@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
-import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Col, FormGroup, Input, Label, Row, Table } from "reactstrap";
+import { Breadcrumb, BreadcrumbItem, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Table } from "reactstrap";
 
 const gradeOptions = [
     {
@@ -45,7 +45,36 @@ const gradeOptions = [
     },
 ];
 
+const students = [
+    {
+        MIS: "MIS-00001",
+        name: "John Doe",
+        marks: 0
+    },
+    {
+        MIS: "MIS-00002",
+        name: "Jane Doe",
+        marks: 0
+    },
+    {
+        MIS: "MIS-00003",
+        name: "John Doe",
+        marks: 0
+    },
+    {
+        MIS: "MIS-00004",
+        name: "Jane Doe",
+        marks: 0
+    },
+]
+
 function GradeRange() {
+
+    const [marks, setMarks] = useState(students);
+    function handleSubmit(e) {
+        e.preventDefault();
+        console.log("Form submitted");
+    }
 
     return (
         <div>
@@ -195,30 +224,53 @@ function GradeRange() {
                     <b>Enrolled Students</b>
                 </CardHeader>
                 <CardBody>
-                    <Table striped>
-                        <thead>
-                            <tr>
-                                <th>
-                                    Student ID
-                                </th>
-                                <th>
-                                    Student Name
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        {"STU" + index}
-                                    </td>
-                                    <td>
-                                        {"Student " + index}
-                                    </td>
+                    <Form onSubmit={handleSubmit}>
+                        <Table striped>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Student ID
+                                    </th>
+                                    <th>
+                                        Student Name
+                                    </th>
+                                    <th>
+                                        Marks
+                                    </th>
+                                    <th>
+                                        Grade
+                                    </th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {students.map((student, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            {student.MIS}
+                                        </td>
+                                        <td>
+                                            {student.name}
+                                        </td>
+                                        <td width={100}>
+                                            <Input
+                                                value={student.marks}
+                                                onChange={(e) => {
+                                                    student.marks = e.target.value;
+                                                    setMarks([...marks]);
+                                                }}
+                                                type="number"
+                                                min={0}
+                                            />
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                        <Button className="float-end" type="submit">Assign Grades</Button>
+                    </Form>
                 </CardBody>
             </Card>
         </div>
