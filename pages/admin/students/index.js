@@ -1,5 +1,7 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap'
+import StudentList from '../../../src/components/admin/student/studentList'
 import CustomBreadcrumb from '../../../src/components/breadcrumb'
 const breadcrumbConfig = [
     {
@@ -14,7 +16,98 @@ const breadcrumbConfig = [
         label: "Students"
     }
 ]
+
+// yearoptions from 2016 till current year
+// program options B.Tech, BCA, BBA, M.Tech, MCA, MBA
+
+const yearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const yearOptions = [];
+    for (let i = 2016; i <= currentYear; i++) {
+        yearOptions.push(i);
+    }
+    return yearOptions;
+}
+
+const programOptions = [
+    "B.Tech",
+    "M.Tech",
+]
+
+const branchOptions = [
+    "CSE",
+    "ECE",
+]
+
 function Index() {
+    const [refetch, setRefetch] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [filter, setFilter] = useState({
+        yearOfAdmission: "2018",
+        program: "B.Tech",
+        branch: "CSE"
+    })
+    const [registerStudent, setRegisterStudent] = useState({
+        MIS: "",
+        name: "",
+        email: "",
+    });
+
+
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        axios.post('/api/admin/student', { ...filter, ...registerStudent })
+            .then(res => {
+                setRefetch(!refetch);
+                console.log(res)
+                setRegisterStudent({
+                    MIS: "",
+                    name: "",
+                    email: "",
+                });
+            })
+            .catch(err => console.log(err))
+    }
+
+    function handleEdit(e) {
+        e.preventDefault();
+        axios.patch(`/api/admin/student/${registerStudent.MIS}`, { ...filter, ...registerStudent })
+            .then(res => {
+                setRefetch(!refetch);
+                console.log(res)
+                setRegisterStudent({
+                    MIS: "",
+                    name: "",
+                    email: "",
+                });
+                setEdit(false);
+            })
+            .catch(err => console.log(err))
+    }
+
+    function handleOnFilterChange(e) {
+        setFilter({
+            ...filter,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    function handleOnRegisterStudentChange(e) {
+        setRegisterStudent({
+            ...registerStudent,
+            [e.target.name]: e.target.value
+        })
+    }
+    const reset = () => {
+        setRegisterStudent({
+            MIS: "",
+            name: "",
+            email: "",
+        });
+        setEdit(false);
+    }
+
     return (
         <div>
             <CustomBreadcrumb
@@ -28,13 +121,21 @@ function Index() {
                     <Row>
                         <Col>
                             <FormGroup>
-                                <Label for="yearOfAdmission">Year of Admission</Label>
+                                <Label for="yearOfAdmission">
+                                    Year of Admission
+                                </Label>
                                 <Input
                                     id="yearOfAdmission"
                                     name="yearOfAdmission"
                                     placeholder="Year of Admission"
-                                    type="text"
-                                />
+                                    type="select"
+                                    value={filter.yearOfAdmission}
+                                    onChange={handleOnFilterChange}
+                                >
+                                    {yearOptions().map(year => {
+                                        return <option key={year} value={year}>{year}</option>
+                                    })}
+                                </Input>
                             </FormGroup>
                         </Col>
                         <Col>
@@ -44,8 +145,14 @@ function Index() {
                                     id="program"
                                     name="program"
                                     placeholder="Program"
-                                    type="text"
-                                />
+                                    type="select"
+                                    value={filter.program}
+                                    onChange={handleOnFilterChange}
+                                >
+                                    {programOptions.map(program => {
+                                        return <option key={program} value={program}>{program}</option>
+                                    })}
+                                </Input>
                             </FormGroup>
                         </Col>
                         <Col>
@@ -55,8 +162,14 @@ function Index() {
                                     id="branch"
                                     name="branch"
                                     placeholder="Branch"
-                                    type="text"
-                                />
+                                    type="select"
+                                    value={filter.branch}
+                                    onChange={handleOnFilterChange}
+                                >
+                                    {branchOptions.map(branch => {
+                                        return <option key={branch} value={branch}>{branch}</option>
+                                    })}
+                                </Input>
                             </FormGroup>
                         </Col>
                     </Row>
@@ -67,7 +180,7 @@ function Index() {
                     Register Student
                 </CardHeader>
                 <CardBody>
-                    <Form>
+                    <Form onSubmit={edit ? handleEdit : handleSubmit}>
                         <Row>
                             <Col>
                                 <FormGroup>
@@ -76,7 +189,9 @@ function Index() {
                                         id="MIS"
                                         name="MIS"
                                         placeholder="MIS"
-                                        type="number"
+                                        type="text"
+                                        value={registerStudent.MIS}
+                                        onChange={handleOnRegisterStudentChange}
                                     />
                                 </FormGroup>
                             </Col>
@@ -88,6 +203,8 @@ function Index() {
                                         name="name"
                                         placeholder="Name"
                                         type="text"
+                                        value={registerStudent.name}
+                                        onChange={handleOnRegisterStudentChange}
                                     />
                                 </FormGroup>
                             </Col>
@@ -99,19 +216,23 @@ function Index() {
                                         name="email"
                                         placeholder="Email"
                                         type="email"
+                                        value={registerStudent.email}
+                                        onChange={handleOnRegisterStudentChange}
                                     />
                                 </FormGroup>
                             </Col>
                         </Row>
                         <div className='float-end'>
-                            <Button type="reset" className='mx-2'>Clear</Button>
-                            <Button type="submit">Submit</Button>
+                            <Button type="reset" className='mx-2' onClick={reset}>Clear</Button>
+                            <Button type="submit">{edit ? "Edit" : "Submit"}</Button>
                         </div>
                     </Form>
                 </CardBody>
             </Card>
+            <StudentList {...filter} {...{ setRefetch, refetch, setRegisterStudent, setEdit }} />
         </div>
     )
 }
+
 
 export default Index

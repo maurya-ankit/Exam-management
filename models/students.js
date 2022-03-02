@@ -7,14 +7,16 @@ const StudentSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     MIS: {
-        type: Number,
-        required: true
+        type: String,
+        required: true,
+        unique: true
     },
     yearOfAdmission: {
-        type: Number,
+        type: String,
         required: true
     },
     program: {
@@ -32,11 +34,11 @@ const StudentSchema = new mongoose.Schema({
     semester: [
         {
             sem: {
-                type: Schema.Types.Number,
+                type: String,
                 required: true
             },
             academicYear: {
-                type: Schema.Types.String,
+                type: String,
                 required: true
             },
             course: [
