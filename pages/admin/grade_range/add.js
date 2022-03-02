@@ -14,6 +14,7 @@ import {
     Label,
     Row,
 } from "reactstrap";
+import CustomBreadcrumb from "../../../src/components/breadcrumb";
 
 const gradeOptions = [
     {
@@ -58,6 +59,25 @@ const gradeOptions = [
     },
 ];
 
+const breadcrumbConfig = [
+    {
+        label: "Home",
+        link: "/"
+    },
+    {
+        label: "Admin",
+        link: "/admin"
+    },
+    {
+        label: "Grade Range",
+        link: "/admin/grade_range"
+    },
+    {
+        label: "Add"
+    }
+
+]
+
 function GradeRange() {
     const [gradeRanges, setGradeRanges] = useState(gradeOptions);
     function handleSubmit(e) {
@@ -66,18 +86,9 @@ function GradeRange() {
     }
     return (
         <div>
-            <Breadcrumb>
-                <BreadcrumbItem>
-                    <Link href="/">Home</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <Link href="/admin">Admin</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <Link href="/admin/grade_range">Grade Range</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem active>Add</BreadcrumbItem>
-            </Breadcrumb>
+            <CustomBreadcrumb
+                items={breadcrumbConfig}
+            />
             <Card>
                 <CardHeader>
                     <i className="fa fa-align-justify"></i> Grade Range

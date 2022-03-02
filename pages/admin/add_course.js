@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { Row, Col, Card, CardTitle, Form, FormGroup, Label, Input, Button, CardBody, Table, CardFooter, Pagination, PaginationItem, PaginationLink, Breadcrumb, BreadcrumbItem } from 'reactstrap'
+import CustomBreadcrumb from '../../src/components/breadcrumb';
 
 
 const courses = [
@@ -26,6 +27,21 @@ const courses = [
     },
 ]
 
+const breadcrumbConfig = [
+    {
+        label: "Home",
+        link: "/"
+    },
+    {
+        label: "Admin",
+        link: "/admin"
+    },
+    {
+        label: "Add course"
+    }
+
+]
+
 function AddCourse() {
     function handleSubmit(e) {
         e.preventDefault();
@@ -33,15 +49,9 @@ function AddCourse() {
     }
     return (
         <div>
-            <Breadcrumb>
-                <BreadcrumbItem>
-                    <Link href="/">Home</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <Link href="/admin">Admin</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem active>Add course</BreadcrumbItem>
-            </Breadcrumb>
+            <CustomBreadcrumb
+                items={breadcrumbConfig}
+            />
             <Card>
                 <CardTitle tag="h6" className="border-bottom p-3 mb-0">
                     <i className="bi bi-bell me-2"> </i>
@@ -92,8 +102,19 @@ function AddCourse() {
             </Card>
             <Card>
                 <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-                    <i className="bi bi-card-text me-2"> </i>
-                    Course List
+                    <Row>
+                        <Col>
+                            <i className="bi bi-card-text me-2"> </i>
+                            Course List
+                        </Col>
+                        <Col>
+                        </Col>
+                        <Col>
+                            <Input
+                                placeholder='Type to Search'
+                            />
+                        </Col>
+                    </Row>
                 </CardTitle>
                 <CardBody className="">
                     <Table striped>

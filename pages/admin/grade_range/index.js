@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { Breadcrumb, BreadcrumbItem, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Table } from "reactstrap";
+import CustomBreadcrumb from "../../../src/components/breadcrumb";
 
 const gradeOptions = [
     {
@@ -68,6 +69,20 @@ const students = [
     },
 ]
 
+const breadcrumbConfig = [
+    {
+        label: "Home",
+        link: "/"
+    },
+    {
+        label: "Admin",
+        link: "/admin"
+    },
+    {
+        label: "Grade Range"
+    }
+]
+
 function GradeRange() {
 
     const [marks, setMarks] = useState(students);
@@ -75,18 +90,16 @@ function GradeRange() {
         e.preventDefault();
         console.log("Form submitted");
     }
+    function handleAddStudent(e) {
+        e.preventDefault();
+        console.log("Form submitted");
+    }
 
     return (
         <div>
-            <Breadcrumb>
-                <BreadcrumbItem>
-                    <Link href="/">Home</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <Link href="/admin">Admin</Link>
-                </BreadcrumbItem>
-                <BreadcrumbItem active>Grade Range</BreadcrumbItem>
-            </Breadcrumb>
+            <CustomBreadcrumb
+                items={breadcrumbConfig}
+            />
             <Row>
                 <Col>
                     <FormGroup>
@@ -221,7 +234,30 @@ function GradeRange() {
             </Card>
             <Card>
                 <CardHeader>
-                    <b>Enrolled Students</b>
+                    <Row>
+                        <Col>
+                            <b>Enrolled Students</b>
+                        </Col>
+                        <Col>
+                            <Form>
+                                <Row onClick={handleAddStudent}>
+                                    <Col md="8">
+                                        <Input
+                                            placeholder="Add Student"
+                                        />
+                                    </Col>
+                                    <Col>
+                                        <Button type="submit" className="float-end">Add</Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Col>
+                        <Col>
+                            <Input
+                                placeholder="Type to Search"
+                            />
+                        </Col>
+                    </Row>
                 </CardHeader>
                 <CardBody>
                     <Form onSubmit={handleSubmit}>
