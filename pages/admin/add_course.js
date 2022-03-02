@@ -1,5 +1,6 @@
+import axios from 'axios';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, CardTitle, Form, FormGroup, Label, Input, Button, CardBody, Table, CardFooter, Pagination, PaginationItem, PaginationLink, Breadcrumb, BreadcrumbItem } from 'reactstrap'
 import CustomBreadcrumb from '../../src/components/breadcrumb';
 
@@ -43,10 +44,87 @@ const breadcrumbConfig = [
 ]
 
 function AddCourse() {
+    const [createCourse, setCreateCourse] = useState({
+        courseCode: '',
+        courseName: '',
+        courseCredit: ''
+    });
+    const [refetch, setRefetch] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [courses, setCourses] = useState([]);
+    useEffect(() => {
+        axios.get('/api/admin/course').then(res => {
+            setCourses(res.data);
+        })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [refetch])
     function handleSubmit(e) {
         e.preventDefault();
         console.log("Form submitted");
+        console.log(createCourse);
+        axios.post('/api/admin/course', createCourse)
+            .then((res) => {
+                console.log(res);
+                setCreateCourse({
+                    courseCode: '',
+                    courseName: '',
+                    courseCredit: ''
+                });
+                setRefetch(!refetch);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
+    function handleUpdateSubmit(e) {
+        e.preventDefault();
+        console.log("Form submitted");
+        console.log(createCourse);
+        axios.patch('/api/admin/course/' + createCourse.courseCode, createCourse)
+            .then((res) => {
+                console.log(res);
+                setCreateCourse({
+                    courseCode: '',
+                    courseName: '',
+                    courseCredit: ''
+                });
+                setRefetch(!refetch);
+                setEdit(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        setCreateCourse({
+            ...createCourse,
+            [name]: value,
+        });
+    }
+    const editCourse = (course) => {
+        setCreateCourse({
+            courseCode: course.courseCode,
+            courseName: course.courseName,
+            courseCredit: course.courseCredit
+        });
+        setEdit(true);
+    }
+    const deleteCourse = (courseCode) => {
+        axios.delete('/api/admin/course/' + courseCode).then(res => {
+            console.log(res);
+            setRefetch(!refetch);
+        })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+
     return (
         <div>
             <CustomBreadcrumb
@@ -58,7 +136,7 @@ function AddCourse() {
                     Add Course
                 </CardTitle>
                 <CardBody>
-                    <Form className='' onSubmit={handleSubmit}>
+                    <Form className='' onSubmit={edit ? handleUpdateSubmit : handleSubmit}>
                         <Row>
                             <Col>
                                 <FormGroup>
@@ -68,6 +146,8 @@ function AddCourse() {
                                         name="courseCode"
                                         placeholder="Course Code"
                                         type="text"
+                                        value={createCourse.courseCode}
+                                        onChange={handleChange}
                                     />
                                 </FormGroup>
                             </Col>
@@ -79,6 +159,8 @@ function AddCourse() {
                                         name="courseName"
                                         placeholder="Course Name"
                                         type="text"
+                                        value={createCourse.courseName}
+                                        onChange={handleChange}
                                     />
                                 </FormGroup>
                             </Col>
@@ -91,12 +173,14 @@ function AddCourse() {
                                         placeholder="Course Credit"
                                         type="number"
                                         min="1"
+                                        value={createCourse.courseCredit}
+                                        onChange={handleChange}
                                     />
                                 </FormGroup>
 
                             </Col>
                         </Row>
-                        <Button className='float-end' type="submit">Submit</Button>
+                        <Button className='float-end' type="submit">{edit ? "Edit" : "Submit"}</Button>
                     </Form>
                 </CardBody>
             </Card>
@@ -123,6 +207,7 @@ function AddCourse() {
                                 <th>Course Code</th>
                                 <th>Course Name</th>
                                 <th>Course Credit</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,13 +215,25 @@ function AddCourse() {
                                 <tr key={index}>
                                     <td>{course.courseCode}</td>
                                     <td>{course.courseName}</td>
-                                    <td>{course.credit}</td>
+                                    <td>{course.courseCredit}</td>
+                                    <td>
+                                        <Button
+                                            className='rounded-pill mx-2'
+                                            onClick={() => editCourse(course)}>
+                                            <i className="bi bi-pen"></i>
+                                        </Button>
+                                        <Button
+                                            className='rounded-pill'
+                                            onClick={() => deleteCourse(course.courseCode)}>
+                                            <i className="bi bi-trash-fill"></i>
+                                        </Button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </Table>
                 </CardBody>
-                <CardFooter>
+                {/* <CardFooter>
                     <Pagination>
                         <PaginationItem>
                             <PaginationLink
@@ -188,7 +285,7 @@ function AddCourse() {
                             />
                         </PaginationItem>
                     </Pagination>
-                </CardFooter>
+                </CardFooter> */}
             </Card>
         </div>
     )

@@ -6,7 +6,7 @@ const gradeRangeSchema = new mongoose.Schema({
         required: true
     },
     semester: {
-        type: Number,
+        type: String,
         required: true,
     },
     courseCode: {
@@ -31,10 +31,16 @@ const gradeRangeSchema = new mongoose.Schema({
     ],
     students: [
         {
-            type: Number,
+            type: String,
             required: true,
         }
     ]
 });
+
+gradeRangeSchema.index({
+    academicYear: 1,
+    semester: 1,
+    courseCode: 1
+}, { unique: true });
 
 export default mongoose.models.GradeRange || mongoose.model('GradeRange', gradeRangeSchema);
