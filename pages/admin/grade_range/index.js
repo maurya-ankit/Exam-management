@@ -195,6 +195,8 @@ function GradeRange() {
             }).catch(err => {
                 console.log(err);
                 setCreate(true);
+                setGradeRanges(gradeOptions);
+                setStudents([]);
             })
     }, [filters])
     return (
@@ -271,15 +273,15 @@ function GradeRange() {
                                     Course Code
                                 </td>
                                 <td>
-                                    <b>{"BT101"}</b>
+                                    <b>{filters.courseCode}</b>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    Course Name
+                                    Semester
                                 </td>
                                 <td>
-                                    <b>{"Subject name"}</b>
+                                    <b>{filters.semester}</b>
                                 </td>
                             </tr>
                             <tr>
@@ -287,7 +289,7 @@ function GradeRange() {
                                     Academic Year
                                 </td>
                                 <td>
-                                    <b>{"2021-2022"}</b>
+                                    <b>{filters.academicYear}</b>
                                 </td>
                             </tr>
                         </tbody>
