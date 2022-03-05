@@ -1,5 +1,6 @@
+import axios from "axios";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Breadcrumb, BreadcrumbItem, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Table } from "reactstrap";
 import CustomBreadcrumb from "../../../src/components/breadcrumb";
 
@@ -83,18 +84,119 @@ const breadcrumbConfig = [
     }
 ]
 
-function GradeRange() {
+// function to return list of all academic years since 2016 as 2016-2017, 2017-2018, 2018-2019 etc.
+function getAcademicYears() {
+    let years = [];
+    let currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= 2016; i--) {
+        years.push(`${i}-${i + 1}`);
+    }
+    return years;
+}
 
+// generate semesters as int and romans
+function getSemesters() {
+    let semesters = [];
+    for (let i = 1; i <= 8; i++) {
+        semesters.push({
+            semester: i,
+            roman: i === 1 ? "I" : i === 2 ? "II" : i === 3 ? "III" : i === 4 ? "IV" : i === 5 ? "V" : i === 6 ? "VI" : i === 7 ? "VII" : "VIII"
+        });
+    }
+    return semesters;
+}
+
+function GradeRange() {
+    const [gradeRanges, setGradeRanges] = useState(gradeOptions);
+    const [students, setStudents] = useState([]);
+    const [student, setStudent] = useState("");
+    const academicYears = getAcademicYears();
+    const semesters = getSemesters();
+    const [create, setCreate] = useState(false);
+    const courses = [
+        {
+            courseCode: "CSE-101",
+            courseName: "Computer Science I"
+        },
+        {
+            courseCode: "CSE-102",
+            courseName: "Computer Science II"
+        },
+        {
+            courseCode: "CSE-103",
+            courseName: "Computer Science III"
+        },
+    ]
+    const [filters, setFilters] = useState({
+        academicYear: academicYears[0],
+        semester: semesters[0].semester,
+        courseCode: courses[0].courseCode
+    })
     const [marks, setMarks] = useState(students);
     function handleSubmit(e) {
         e.preventDefault();
-        console.log("Form submitted");
+        const body = {
+            academicYear: filters.academicYear,
+            semester: filters.semester,
+            courseCode: filters.courseCode,
+            ranges: gradeRanges
+        }
+        axios.post(`/api/admin/grade_range`, body)
+            .then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.log(err);
+            })
+    }
+    function handleUpdate(e) {
+        e.preventDefault();
+        const body = {
+            academicYear: filters.academicYear,
+            semester: filters.semester,
+            courseCode: filters.courseCode,
+            ranges: gradeRanges
+        }
+        axios.patch(`/api/admin/grade_range/${body.academicYear}/${body.semester}/${body.courseCode}`, body)
+            .then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.log(err);
+            })
     }
     function handleAddStudent(e) {
         e.preventDefault();
-        console.log("Form submitted");
+        setStudents([...students, student]);
+        const body = {
+            academicYear: filters.academicYear,
+            semester: filters.semester,
+            courseCode: filters.courseCode,
+            students: [...students.map(stu => stu.MIS), student]
+        }
+        axios.patch(`/api/admin/grade_range/${body.academicYear}/${body.semester}/${body.courseCode}`, body)
+            .then(res => {
+                console.log(res);
+            }).catch(err => {
+                console.log(err);
+            })
+    }
+    function handleOnFilterChange(e) {
+        setFilters({
+            ...filters,
+            [e.target.name]: e.target.value
+        });
     }
 
+    useEffect(() => {
+        axios.get(`/api/admin/grade_range/${filters.academicYear}/${filters.semester}/${filters.courseCode}`)
+            .then(res => {
+                console.log(res);
+                setGradeRanges(res.data.ranges);
+                setStudents(res.data.students);
+            }).catch(err => {
+                console.log(err);
+                setCreate(true);
+            })
+    }, [filters])
     return (
         <div>
             <CustomBreadcrumb
@@ -103,66 +205,56 @@ function GradeRange() {
             <Row>
                 <Col>
                     <FormGroup>
-                        <Label for="exampleSelect">
+                        <Label for="academicYearSelect">
                             Select Academic Year
                         </Label>
                         <Input
-                            id="exampleSelect"
-                            name="select"
+                            id="academicYearSelect"
+                            name="academicYear"
                             type="select"
+                            value={filters.academicYear}
+                            onChange={handleOnFilterChange}
                         >
-                            <option>
-                                2018-2019
-                            </option>
-                            <option>
-                                2019-2020
-                            </option>
-                            <option>
-                                2020-2021
-                            </option>
-                            <option>
-                                2021-2022
-                            </option>
-                            <option>
-                                2022-2023
-                            </option>
+                            {getAcademicYears().map((year) => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
                         </Input>
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
-                        <Label for="exampleSelect">
+                        <Label for="semesterSelect">
                             Select Semester
                         </Label>
                         <Input
-                            id="exampleSelect"
-                            name="select"
+                            id="semesterSelect"
+                            name="semester"
                             type="select"
+                            value={filters.semester}
+                            onChange={handleOnFilterChange}
                         >
-                            {["I", "II", "III", "IV", "V", "VI", "VII", "VIII"].map((item, index) => {
-                                return (
-                                    <option key={index}>
-                                        {item}
-                                    </option>
-                                );
-                            })}
+                            {getSemesters().map((semester) => (
+                                <option key={semester.semester} value={semester.semester}>{semester.roman}</option>
+                            ))}
                         </Input>
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
-                        <Label for="exampleSelect">
+                        <Label for="courseCodeSelect">
                             Select Course
                         </Label>
                         <Input
-                            id="exampleSelect"
-                            name="select"
+                            id="courseCodeSelect"
+                            name="courseCode"
                             type="select"
+                            value={filters.courseCode}
+                            onChange={handleOnFilterChange}
                         >
-                            {["BT101", "BT121", "BT234", "BTCSE", "BTXFC", "BT0001", "BT545", "BT601"].map((item, index) => {
+                            {courses.map((course, index) => {
                                 return (
-                                    <option key={index}>
-                                        {item}
+                                    <option key={index} value={course.courseCode}>
+                                        {course.courseCode} {course.courseName}
                                     </option>
                                 );
                             })}
@@ -200,36 +292,62 @@ function GradeRange() {
                             </tr>
                         </tbody>
                     </Table>
-                    <Table striped>
-                        <thead>
-                            <tr>
-                                <th>
-                                    Grade
-                                </th>
-                                <th>
-                                    Min
-                                </th>
-                                <th>
-                                    Max
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {gradeOptions.map((grade, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        {grade.grade}
-                                    </td>
-                                    <td>
-                                        {grade.min}
-                                    </td>
-                                    <td>
-                                        {grade.max}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                    <Form onSubmit={create ? handleSubmit : handleUpdate}>
+                        {gradeRanges.map((grade, index) => (
+                            <Row key={index}>
+                                <Col>
+                                    <FormGroup>
+                                        <Label for="courseCode">Grade</Label>
+                                        <Input
+                                            id="grade"
+                                            name="grade"
+                                            placeholder="Grade"
+                                            type="text"
+                                            value={grade.grade}
+                                            disabled
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col>
+                                    <FormGroup>
+                                        <Label for="min">Min</Label>
+                                        <Input
+                                            id="min"
+                                            name="min"
+                                            placeholder="Min"
+                                            type="number"
+                                            min={0}
+                                            max={100}
+                                            value={grade.min}
+                                            onChange={(e) => {
+                                                grade.min = e.target.value;
+                                                setGradeRanges([...gradeRanges]);
+                                            }}
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col>
+                                    <FormGroup>
+                                        <Label for="max">Max</Label>
+                                        <Input
+                                            id="max"
+                                            name="max"
+                                            placeholder="Max"
+                                            type="number"
+                                            min={0}
+                                            max={100}
+                                            value={grade.max}
+                                            onChange={(e) => {
+                                                grade.max = e.target.value;
+                                                setGradeRanges([...gradeRanges]);
+                                            }}
+                                        />
+                                    </FormGroup>
+                                </Col>
+                            </Row>
+                        ))}
+                        <Button type="submit" className="float-end">Submit</Button>
+                    </Form>
                 </CardBody>
             </Card>
             <Card>
@@ -239,11 +357,17 @@ function GradeRange() {
                             <b>Enrolled Students</b>
                         </Col>
                         <Col>
-                            <Form>
-                                <Row onClick={handleAddStudent}>
+                            <Form onSubmit={handleAddStudent}>
+                                <Row>
                                     <Col md="8">
                                         <Input
                                             placeholder="Add Student"
+                                            type="text"
+                                            name="MIS"
+                                            value={student}
+                                            onChange={(e) => {
+                                                setStudent(e.target.value);
+                                            }}
                                         />
                                     </Col>
                                     <Col>

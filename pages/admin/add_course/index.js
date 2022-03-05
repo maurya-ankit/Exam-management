@@ -2,7 +2,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, CardTitle, Form, FormGroup, Label, Input, Button, CardBody, Table, CardFooter, Pagination, PaginationItem, PaginationLink, Breadcrumb, BreadcrumbItem } from 'reactstrap'
-import CustomBreadcrumb from '../../src/components/breadcrumb';
+import CustomBreadcrumb from '../../../src/components/breadcrumb';
 
 
 const courses = [

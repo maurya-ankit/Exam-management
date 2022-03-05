@@ -1,28 +1,40 @@
 import dbConnect from '../../../../lib/dbConnect';
 import GradeRange from '../../../../models/gradeRange';
-import Student from '../../../../models/students';
-export default async function handler(req, res) {
-    const { method } = req;
+
+import nc from "next-connect";
+
+const handler = nc({
+    onError: (err, req, res, next) => {
+        console.error(err.stack);
+        res.status(500).end("Something broke!");
+    },
+    onNoMatch: (req, res) => {
+        res.status(404).end("Page is not found");
+    },
+})
+
+handler.use(async (req, res, next) => {
     await dbConnect();
-    if (method === 'GET') {
-        const { academicYear, semester, courseCode } = req.query;
-        const gradeRanges = await GradeRange.find({
-            academicYear,
-            semester,
-            courseCode
-        });
-        res.status(200).json(gradeRanges);
+    next();
+})
+
+handler.get(async (req, res) => {
+    const { academicYear, semester, courseCode } = req.query;
+    const gradeRanges = await GradeRange.find({
+        academicYear,
+        semester,
+        courseCode
+    });
+    res.status(200).json(gradeRanges);
+});
+handler.post(async (req, res) => {
+    try {
+        const gradeRange = await GradeRange.create(req.body);
+        // Process a POST request
+        res.status(201).json({ success: true, data: gradeRange })
+    } catch (err) {
+        res.status(400).json({ success: false, error: err })
     }
-    else if (method === 'POST') {
-        try {
-            const gradeRange = await GradeRange.create(req.body);
-            // Process a POST request
-            res.status(201).json({ success: true, data: gradeRange })
-        } catch (err) {
-            res.status(400).json({ success: false, error: err })
-        }
-    } else {
-        res.status(400).json({ success: false, message: 'Method not allowed' })
-        // Handle any other HTTP method
-    }
-}
+})
+
+export default handler;
