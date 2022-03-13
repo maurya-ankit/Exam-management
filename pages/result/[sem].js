@@ -1,6 +1,11 @@
+import { ObjectId } from 'mongodb';
 import Link from 'next/link';
 import React from 'react'
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, CardText, CardTitle, Col, Row, Table } from 'reactstrap';
+import dbConnect from '../../lib/dbConnect';
+import Course from '../../models/course';
+import StudentGrade from '../../models/studentGrade';
+import Students from '../../models/students';
 const data = {
     name: "Ankit Maurya",
     yearOfAdmission: "2018",
@@ -53,7 +58,18 @@ const data = {
     },
 }
 
-function Result() {
+const gradePoint = {
+    "O": 10,
+    "A+": 9,
+    "A-": 8,
+    "B+": 7,
+    "B-": 6,
+    "C+": 5,
+    "C-": 4,
+    "F": 0,
+}
+
+function Result({ data }) {
     return (
         <div>
             <Breadcrumb>
@@ -160,7 +176,7 @@ function Result() {
                                 </tr>))}
                         </tbody>
                     </Table>
-                    <Row>
+                    <Row >
                         <Col>
                             <Card body>
                                 <CardTitle tag="h5">Current Semester</CardTitle>
@@ -172,7 +188,7 @@ function Result() {
                                                     Credit
                                                 </td>
                                                 <td>
-                                                    <b>{data.currentSem.credit}</b>
+                                                    <b>{data.currentSem?.credit}</b>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -180,7 +196,7 @@ function Result() {
                                                     gradePointEarned
                                                 </td>
                                                 <td>
-                                                    <b>{data.currentSem.gradePointEarned}</b>
+                                                    <b>{data.currentSem?.gradePointEarned}</b>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -188,7 +204,7 @@ function Result() {
                                                     SGPA
                                                 </td>
                                                 <td>
-                                                    <b>{data.currentSem.SGPA}</b>
+                                                    <b>{data.currentSem?.SGPA}</b>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -197,39 +213,40 @@ function Result() {
                             </Card>
                         </Col>
                         <Col>
-                            <Card body>
-                                <CardTitle tag="h5">Cumulative Semester</CardTitle>
-                                <CardText>
-                                    <Table borderless>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    Credit
-                                                </td>
-                                                <td>
-                                                    <b>{data.cumulativeSem.credit}</b>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    gradePointEarned
-                                                </td>
-                                                <td>
-                                                    <b>{data.cumulativeSem.gradePointEarned}</b>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    CGPA
-                                                </td>
-                                                <td>
-                                                    <b>{data.cumulativeSem.CGPA}</b>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </CardText>
-                            </Card>
+                            {
+                                data.cumulativeSem && <Card body>
+                                    <CardTitle tag="h5">Cumulative Semester</CardTitle>
+                                    <CardText>
+                                        <Table borderless>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Credit
+                                                    </td>
+                                                    <td>
+                                                        <b>{data.cumulativeSem?.credit}</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        gradePointEarned
+                                                    </td>
+                                                    <td>
+                                                        <b>{data.cumulativeSem?.gradePointEarned}</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        CGPA
+                                                    </td>
+                                                    <td>
+                                                        <b>{data.cumulativeSem?.CGPA}</b>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </Table>
+                                    </CardText>
+                                </Card>}
                         </Col>
                     </Row>
                 </CardBody>
@@ -240,3 +257,41 @@ function Result() {
 }
 
 export default Result;
+
+export async function getServerSideProps(context) {
+    await dbConnect();
+    const { sem } = context.query;
+    const email = 'ankitmaurya18@cse.iiitp.ac.in'
+    let semInfo = await Students.findOne({ email: email })
+    let data = semInfo.semesters.find(item => item.semester === sem)
+    delete semInfo.semesters
+    semInfo = JSON.parse(JSON.stringify(semInfo))
+    const allCourses = await Course.find();
+    semInfo['course'] = await Promise.all(data.course.map(async item => {
+        return await StudentGrade.findById(ObjectId(item));
+    }))
+    semInfo['course'] = semInfo.course.map(item => {
+        const courseDetails = allCourses.find(course => course.courseCode === item.courseCode)
+        return {
+            courseCode: item.courseCode,
+            courseName: courseDetails.courseName,
+            courseCredit: courseDetails.courseCredit,
+            gradeEarned: item.grade
+        }
+    })
+    semInfo['semester'] = sem;
+    semInfo['academicYear'] = data['academicYear'];
+    const currentSem = {}
+    currentSem.credit = semInfo.course.reduce((acc, item) => acc + item.courseCredit, 0)
+    currentSem.gradePointEarned = semInfo.course.reduce((acc, item) => acc + (item.courseCredit * gradePoint[item.gradeEarned]), 0)
+    currentSem.SGPA = currentSem.gradePointEarned / currentSem.credit
+    semInfo['currentSem'] = currentSem;
+
+    semInfo = JSON.parse(JSON.stringify(semInfo))
+
+    return {
+        props: {
+            data: semInfo
+        }
+    }
+}

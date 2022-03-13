@@ -59,7 +59,7 @@ handler.get(async (req, res) => {
                     'pipeline': [
                         {
                             '$match': {
-                                'courseCode': 'CSE-101',
+                                'courseCode': courseCode,
                                 'MIS': {
                                     '$in': gradeRangeStu.students
                                 }
@@ -70,8 +70,7 @@ handler.get(async (req, res) => {
                 }
             }, {
                 '$project': {
-                    'students.name': 1,
-                    'students.MIS': 1,
+                    'students': 1,
                     'ranges': 1
                 }
             }

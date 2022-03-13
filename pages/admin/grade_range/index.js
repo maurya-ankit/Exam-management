@@ -1,9 +1,9 @@
 import axios from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, BreadcrumbItem, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Table } from "reactstrap";
+import { Alert, Breadcrumb, BreadcrumbItem, Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Input, Label, Row, Table } from "reactstrap";
 import CustomBreadcrumb from "../../../src/components/breadcrumb";
-
+import Course from '../../../models/course'
 const gradeOptions = [
     {
         grade: "O",
@@ -47,28 +47,6 @@ const gradeOptions = [
     },
 ];
 
-const students = [
-    {
-        MIS: "MIS-00001",
-        name: "John Doe",
-        marks: 0
-    },
-    {
-        MIS: "MIS-00002",
-        name: "Jane Doe",
-        marks: 0
-    },
-    {
-        MIS: "MIS-00003",
-        name: "John Doe",
-        marks: 0
-    },
-    {
-        MIS: "MIS-00004",
-        name: "Jane Doe",
-        marks: 0
-    },
-]
 
 const breadcrumbConfig = [
     {
@@ -106,27 +84,13 @@ function getSemesters() {
     return semesters;
 }
 
-function GradeRange() {
+function GradeRange({ courses }) {
     const [gradeRanges, setGradeRanges] = useState(gradeOptions);
     const [students, setStudents] = useState([]);
     const [student, setStudent] = useState("");
     const academicYears = getAcademicYears();
     const semesters = getSemesters();
     const [create, setCreate] = useState(false);
-    const courses = [
-        {
-            courseCode: "CSE-101",
-            courseName: "Computer Science I"
-        },
-        {
-            courseCode: "CSE-102",
-            courseName: "Computer Science II"
-        },
-        {
-            courseCode: "CSE-103",
-            courseName: "Computer Science III"
-        },
-    ]
     const [filters, setFilters] = useState({
         academicYear: academicYears[0],
         semester: semesters[0].semester,
@@ -192,6 +156,27 @@ function GradeRange() {
         });
     }
 
+    function handleSaveMarks(students) {
+        axios.patch(`/api/admin/student_grade/${filters.courseCode}`, {
+            students
+        })
+    }
+    function assignGrades() {
+        // based on grade reanges, assign grades to students via marks
+        console.log(gradeRanges)
+        const assigned = students.map(student => {
+            for (let i = 0; i < gradeRanges.length; i++) {
+                console.log(i, gradeRanges[i].min, gradeRanges[i].max, student.marks)
+                if (gradeRanges[i].min <= student.marks && gradeRanges[i].max >= student.marks) {
+                    console.log(gradeRanges[i])
+                    student.grade = gradeRanges[i].grade;
+                    break;
+                }
+            }
+            return student;
+        })
+        handleSaveMarks(assigned);
+    }
     useEffect(() => {
         axios.get(`/api/admin/grade_range/${filters.academicYear}/${filters.semester}/${filters.courseCode}`)
             .then(res => {
@@ -358,7 +343,11 @@ function GradeRange() {
                     </Form>
                 </CardBody>
             </Card>
-            <Card>
+            {create ? <>
+                <Alert color="danger">
+                    Course is not yet created, create first
+                </Alert>
+            </> : <Card>
                 <CardHeader>
                     <Row>
                         <Col>
@@ -431,18 +420,30 @@ function GradeRange() {
                                             />
                                         </td>
                                         <td>
-
+                                            {student.grade}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </Table>
-                        <Button className="float-end" type="submit">Assign Grades</Button>
+                        <Button className="float-end" onClick={assignGrades}>Assign Grades</Button>
+                        <Button className="float-end mx-2" onClick={() => handleSaveMarks(students)}>Save marks</Button>
                     </Form>
                 </CardBody>
-            </Card>
+            </Card>}
         </div>
     );
 }
 
 export default GradeRange;
+
+// get serversideprops
+export async function getServerSideProps(context) {
+    let courses = await Course.find();
+    courses = JSON.parse(JSON.stringify(courses));
+    return {
+        props: {
+            courses
+        }
+    }
+}

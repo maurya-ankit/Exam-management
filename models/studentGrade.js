@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import { string } from "sharp/lib/is";
 
 const StudentGradeSchema = new mongoose.Schema({
     MIS: {
-        type: Number,
+        type: String,
         required: true
     },
     courseCode: {

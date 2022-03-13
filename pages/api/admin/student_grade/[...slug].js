@@ -1,5 +1,6 @@
 import dbConnect from '../../../../lib/dbConnect';
 import GradeRange from '../../../../models/gradeRange';
+import StudentGrade from '../../../../models/studentGrade';
 
 import nc from "next-connect";
 
@@ -18,20 +19,29 @@ handler.use(async (req, res, next) => {
     next();
 })
 
-handler.use((req, res, next) => {
-    const { slug } = req.query;
-    if (slug.length < 3) {
-        res.status(400).json({ success: false, message: 'Invalid slug' })
-        return;
-    }
-    next();
-})
-
 handler.get(async (req, res) => {
 
 });
 handler.patch(async (req, res) => {
-
+    // get list of students with marks and grade from body
+    const { slug } = req.query;
+    const courseCode = slug[0];
+    const { students } = req.body;
+    students.forEach(async (student) => {
+        const a = await StudentGrade.findOneAndUpdate({
+            MIS: student.MIS,
+            courseCode
+        }, {
+            $set: {
+                marks: parseInt(student.marks),
+                grade: student.grade
+            }
+        })
+        console.log({
+            a
+        })
+    });
+    res.status(200).json({ success: true, message: 'Successfully updated' })
 });
 
 handler.delete(async (req, res) => {
