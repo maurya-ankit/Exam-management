@@ -11,11 +11,9 @@ const StudentGradeSchema = new mongoose.Schema({
     },
     marks: {
         type: Number,
-        required: true
     },
     grade: {
         type: String,
-        required: true
     }
 });
 

@@ -2,6 +2,7 @@ import dbConnect from '../../../../lib/dbConnect';
 import GradeRange from '../../../../models/gradeRange';
 
 import nc from "next-connect";
+import Students from '../../../../models/students';
 
 const handler = nc({
     onError: (err, req, res, next) => {
@@ -30,28 +31,51 @@ handler.use((req, res, next) => {
 handler.get(async (req, res) => {
     const { slug } = req.query;
     const [academicYear, semester, courseCode] = slug;
-    let gradeRange = await GradeRange.aggregate([
-        {
-            '$match': {
-                'academicYear': academicYear,
-                'semester': semester,
-                'courseCode': courseCode
-            }
-        }, {
-            '$lookup': {
-                'from': 'students',
-                'localField': 'students',
-                'foreignField': 'MIS',
-                'as': 'students'
-            }
-        }, {
-            '$project': {
-                'students.name': 1,
-                'students.MIS': 1,
-                'ranges': 1
-            }
+    const gradeRangeStu = await GradeRange.findOne({ academicYear, semester, courseCode }, {
+        students: 1
+    });
+    const studentInfo = await Students.find({
+        MIS: {
+            $in: gradeRangeStu.students
         }
-    ]).exec();
+    }, {
+        name: 1,
+        MIS: 1
+    });
+    let gradeRange = await GradeRange.aggregate(
+        [
+            {
+                '$match': {
+                    'academicYear': academicYear,
+                    'semester': semester,
+                    'courseCode': courseCode
+                }
+            }, {
+                '$lookup': {
+                    'from': 'studentgrades',
+                    'let': {
+                        'students': '$students'
+                    },
+                    'pipeline': [
+                        {
+                            '$match': {
+                                'courseCode': 'CSE-101',
+                                'MIS': {
+                                    '$in': gradeRangeStu.students
+                                }
+                            }
+                        }
+                    ],
+                    'as': 'students'
+                }
+            }, {
+                '$project': {
+                    'students.name': 1,
+                    'students.MIS': 1,
+                    'ranges': 1
+                }
+            }
+        ]).exec();
     if (gradeRange.length === 0) {
         return res.status(404).json({
             success: false,
@@ -59,6 +83,15 @@ handler.get(async (req, res) => {
         })
     }
     gradeRange = gradeRange[0];
+    // append student name
+    gradeRange.students = gradeRange.students.map(stu => {
+        const student = studentInfo.find(stuInfo => stuInfo.MIS === stu.MIS);
+        if (student) {
+            stu.name = student.name;
+        }
+        return stu;
+    })
+    console.log(gradeRange);
     res.status(200).json(gradeRange);
 });
 handler.patch(async (req, res) => {

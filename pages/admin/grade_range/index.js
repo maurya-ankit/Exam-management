@@ -167,12 +167,18 @@ function GradeRange() {
         e.preventDefault();
         setStudents([...students, student]);
         const body = {
-            academicYear: filters.academicYear,
-            semester: filters.semester,
+            // academicYear: filters.academicYear,
+            // semester: filters.semester,
+            // courseCode: filters.courseCode,
+            // students: [...students.map(stu => stu.MIS), student]
+            MIS: student,
             courseCode: filters.courseCode,
-            students: [...students.map(stu => stu.MIS), student]
+            marks: 0,
+            grade: '',
+            academicYear: filters.academicYear,
+            semester: filters.semester
         }
-        axios.patch(`/api/admin/grade_range/${body.academicYear}/${body.semester}/${body.courseCode}`, body)
+        axios.post(`/api/admin/student_grade`, body)
             .then(res => {
                 console.log(res);
             }).catch(err => {

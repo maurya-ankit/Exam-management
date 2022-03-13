@@ -31,9 +31,9 @@ const StudentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    semester: [
+    semesters: [
         {
-            sem: {
+            semester: {
                 type: String,
                 required: true
             },
@@ -43,8 +43,8 @@ const StudentSchema = new mongoose.Schema({
             },
             course: [
                 {
-                    type: Schema.Types.ObjectId,
-                    ref: "StudentGrade"
+                    type: String,
+                    required: true
                 }
             ]
         }
