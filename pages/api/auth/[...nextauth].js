@@ -11,5 +11,17 @@ export default NextAuth({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET
         })
-    ]
+    ],
+    callbacks: {
+        async signIn({ account, profile }) {
+          if (account.provider === "google") {
+              if(!profile.email.endsWith("iiitp.ac.in"))
+              return false;
+              console.log(profile.email)
+              return true;
+            // return profile.email_verified && profile.email.endsWith("@example.com")
+          }
+          return true // Do different verification for other providers that don't have `email_verified`
+        },
+      }
 })

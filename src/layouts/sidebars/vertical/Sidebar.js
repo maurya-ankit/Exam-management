@@ -10,6 +10,11 @@ const navigation = [
   //   icon: "bi bi-speedometer2",
   // },
   {
+    title: "Users",
+    href: "/admin/users",
+    icon: "bi bi-person-circle",
+  },
+  {
     title: "Add Course",
     href: "/admin/add_course",
     icon: "bi bi-gear",
