@@ -23,7 +23,7 @@ TopCards.propTypes = {
   bg: PropTypes.string,
   icon: PropTypes.string,
   earning: PropTypes.string,
-  subtitle: PropTypes.string,
+  subtitle: PropTypes.string
 };
 
 export default TopCards;

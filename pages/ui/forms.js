@@ -9,7 +9,7 @@ import {
   FormGroup,
   Label,
   Input,
-  FormText,
+  FormText
 } from 'reactstrap';
 
 const Forms = () => {
@@ -56,7 +56,12 @@ const Forms = () => {
               </FormGroup>
               <FormGroup>
                 <Label for="exampleSelectMulti">Select Multiple</Label>
-                <Input id="exampleSelectMulti" multiple name="selectMulti" type="select">
+                <Input
+                  id="exampleSelectMulti"
+                  multiple
+                  name="selectMulti"
+                  type="select"
+                >
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -72,20 +77,23 @@ const Forms = () => {
                 <Label for="exampleFile">File</Label>
                 <Input id="exampleFile" name="file" type="file" />
                 <FormText>
-                  This is some placeholder block-level help text for the above input. Its a bit
-                  lighter and easily wraps to a new line.
+                  This is some placeholder block-level help text for the above
+                  input. Its a bit lighter and easily wraps to a new line.
                 </FormText>
               </FormGroup>
               <FormGroup tag="fieldset">
                 <legend>Radio Buttons</legend>
                 <FormGroup check>
                   <Input name="radio1" type="radio" />{' '}
-                  <Label check>Option one is this and that—be sure to include why its great</Label>
+                  <Label check>
+                    Option one is this and that—be sure to include why its great
+                  </Label>
                 </FormGroup>
                 <FormGroup check>
                   <Input name="radio1" type="radio" />{' '}
                   <Label check>
-                    Option two can be something else and selecting it will deselect option one
+                    Option two can be something else and selecting it will
+                    deselect option one
                   </Label>
                 </FormGroup>
                 <FormGroup check disabled>

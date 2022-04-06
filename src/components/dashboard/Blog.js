@@ -5,10 +5,10 @@ import {
   CardSubtitle,
   CardText,
   CardTitle,
-  Button,
-} from "reactstrap";
-import PropTypes from "prop-types";
-import Image from "next/image";
+  Button
+} from 'reactstrap';
+import PropTypes from 'prop-types';
+import Image from 'next/image';
 
 const Blog = ({ image, title, subtitle, text, color }) => {
   return (
@@ -29,6 +29,6 @@ Blog.propTypes = {
   image: PropTypes.any,
   subtitle: PropTypes.string,
   text: PropTypes.string,
-  color: PropTypes.string,
+  color: PropTypes.string
 };
 export default Blog;

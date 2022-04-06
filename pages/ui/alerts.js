@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import Head from "next/head";
+import React, { useState } from 'react';
+import Head from 'next/head';
 import {
   Alert,
   UncontrolledAlert,
   Card,
   CardBody,
-  CardTitle,
-} from "reactstrap";
-import Link from "next/link";
+  CardTitle
+} from 'reactstrap';
+import Link from 'next/link';
 
 const Alerts = () => {
   // For Dismiss Button with Alert

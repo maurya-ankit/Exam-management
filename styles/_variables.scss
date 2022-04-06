@@ -1,8 +1,8 @@
 /*******************/
 // Theme Fonts
 /********************/
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap");
-$font-family-sans-serif: "Nunito", sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700&display=swap');
+$font-family-sans-serif: 'Nunito', sans-serif;
 /*******************/
 // Theme Colors
 /********************/
@@ -16,19 +16,19 @@ $light: #eaf2fb;
 $secondary: #35363b;
 
 $theme-colors: (
-  "primary": $primary,
-  "secondary": $secondary,
-  "success": $success,
-  "info": $info,
-  "warning": $warning,
-  "danger": $danger,
-  "light": $light,
-  "dark": $dark,
-  "light-primary": #d6e4f3,
-  "light-success": #d5f3f2,
-  "light-info": #d3edfa,
-  "light-warning": #f8ecdc,
-  "light-danger": #f8dddd,
+  'primary': $primary,
+  'secondary': $secondary,
+  'success': $success,
+  'info': $info,
+  'warning': $warning,
+  'danger': $danger,
+  'light': $light,
+  'dark': $dark,
+  'light-primary': #d6e4f3,
+  'light-success': #d5f3f2,
+  'light-info': #d3edfa,
+  'light-warning': #f8ecdc,
+  'light-danger': #f8dddd
 );
 // scss-docs-start gray-color-variables
 $white: #fff !default;

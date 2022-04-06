@@ -1,4 +1,4 @@
-import { Container, Col, Row, Card, CardBody, CardTitle } from "reactstrap";
+import { Container, Col, Row, Card, CardBody, CardTitle } from 'reactstrap';
 
 const Grid = () => {
   return (
@@ -71,7 +71,7 @@ const Grid = () => {
                 sm={{
                   offset: 1,
                   order: 2,
-                  size: 6,
+                  size: 6
                 }}
               >
                 <div className="bg-light p-2 border">
@@ -84,7 +84,7 @@ const Grid = () => {
                 sm="12"
                 md={{
                   offset: 2,
-                  size: 8,
+                  size: 8
                 }}
               >
                 <div className="bg-light p-2 border">
@@ -96,7 +96,7 @@ const Grid = () => {
               <Col
                 sm={{
                   offset: 1,
-                  size: "auto",
+                  size: 'auto'
                 }}
               >
                 <div className="bg-light p-2 border">
@@ -106,7 +106,7 @@ const Grid = () => {
               <Col
                 sm={{
                   offset: 1,
-                  size: "auto",
+                  size: 'auto'
                 }}
               >
                 <div className="bg-light p-2 border">

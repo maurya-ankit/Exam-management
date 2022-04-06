@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { Button, ButtonGroup, Card, CardBody, CardTitle, Row, Col } from 'reactstrap';
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardBody,
+  CardTitle,
+  Row,
+  Col
+} from 'reactstrap';
 
 const Buttons = () => {
   const [cSelected, setCSelected] = useState([]);
   const [rSelected, setRSelected] = useState(null);
 
-  const onRadioBtnClick = (vSelected) => {
+  const onRadioBtnClick = vSelected => {
     setRSelected(vSelected);
   };
 
-  const onCheckboxBtnClick = (selected) => {
+  const onCheckboxBtnClick = selected => {
     const index = cSelected.indexOf(selected);
     if (index < 0) {
       cSelected.push(selected);
@@ -243,13 +251,25 @@ const Buttons = () => {
             <CardBody className="">
               <h5>Radio Buttons</h5>
               <ButtonGroup>
-                <Button color="primary" onClick={() => onRadioBtnClick(1)} active={rSelected === 1}>
+                <Button
+                  color="primary"
+                  onClick={() => onRadioBtnClick(1)}
+                  active={rSelected === 1}
+                >
                   One
                 </Button>
-                <Button color="primary" onClick={() => onRadioBtnClick(2)} active={rSelected === 2}>
+                <Button
+                  color="primary"
+                  onClick={() => onRadioBtnClick(2)}
+                  active={rSelected === 2}
+                >
                   Two
                 </Button>
-                <Button color="primary" onClick={() => onRadioBtnClick(3)} active={rSelected === 3}>
+                <Button
+                  color="primary"
+                  onClick={() => onRadioBtnClick(3)}
+                  active={rSelected === 3}
+                >
                   Three
                 </Button>
               </ButtonGroup>

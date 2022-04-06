@@ -5,9 +5,9 @@ import {
   CardBody,
   CardTitle,
   Breadcrumb,
-  BreadcrumbItem,
-} from "reactstrap";
-import Link from "next/link";
+  BreadcrumbItem
+} from 'reactstrap';
+import Link from 'next/link';
 
 const Breadcrumbs = () => {
   return (

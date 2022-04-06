@@ -1,7 +1,7 @@
-import React from "react";
-import { Container } from "reactstrap";
-import Header from "./header/Header";
-import Sidebar from "./sidebars/vertical/Sidebar";
+import React from 'react';
+import { Container } from 'reactstrap';
+import Header from './header/Header';
+import Sidebar from './sidebars/vertical/Sidebar';
 
 const FullLayout = ({ children }) => {
   const [open, setOpen] = React.useState(false);
@@ -15,7 +15,7 @@ const FullLayout = ({ children }) => {
         {/******** Sidebar **********/}
         <aside
           className={`sidebarArea shadow bg-white ${
-            !open ? "" : "showSidebar"
+            !open ? '' : 'showSidebar'
           }`}
         >
           <Sidebar showMobilemenu={() => showMobilemenu()} />

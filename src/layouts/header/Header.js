@@ -1,6 +1,6 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
   Navbar,
   Collapse,
@@ -12,28 +12,28 @@ import {
   DropdownMenu,
   DropdownItem,
   Dropdown,
-  Button,
-} from "reactstrap";
-import LogoWhite from "../../assets/images/logos/xtremelogowhite.svg";
-import user1 from "../../assets/images/users/user1.jpg";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { signOut } from "next-auth/react"
+  Button
+} from 'reactstrap';
+import LogoWhite from '../../assets/images/logos/xtremelogowhite.svg';
+import user1 from '../../assets/images/users/user1.jpg';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { signOut } from 'next-auth/react';
 
 const Header = ({ showMobmenu }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const { data: session, status } = useSession()
-  const toggle = () => setDropdownOpen((prevState) => !prevState);
+  const { data: session, status } = useSession();
+  const toggle = () => setDropdownOpen(prevState => !prevState);
   const Handletoggle = () => {
     setIsOpen(!isOpen);
   };
-  if (status === "unauthenticated") {
-    return router.push('/api/auth/signin')
+  if (status === 'unauthenticated') {
+    return router.push('/api/auth/signin');
   }
-  if (status === "loading") {
-    return <div>Loading</div>
+  if (status === 'loading') {
+    return <div>Loading</div>;
   }
 
   return (
@@ -87,7 +87,7 @@ const Header = ({ showMobmenu }) => {
         </Nav>
         <Dropdown isOpen={dropdownOpen} toggle={toggle}>
           <DropdownToggle color="primary">
-            <div style={{ lineHeight: "0px" }}>
+            <div style={{ lineHeight: '0px' }}>
               <Image
                 src={session.user.image}
                 alt="profile"

@@ -1,9 +1,7 @@
-import React from "react";
+import React from 'react';
 
 function User() {
-    return ( <React.Fragment>
-        
-    </React.Fragment> );
+  return <React.Fragment></React.Fragment>;
 }
 
 export default User;

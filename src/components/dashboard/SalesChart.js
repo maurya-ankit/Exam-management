@@ -1,49 +1,49 @@
-import { Card, CardBody, CardSubtitle, CardTitle } from "reactstrap";
-import dynamic from "next/dynamic";
+import { Card, CardBody, CardSubtitle, CardTitle } from 'reactstrap';
+import dynamic from 'next/dynamic';
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const SalesChart = () => {
   const chartoptions = {
     series: [
       {
-        name: "Iphone 13",
-        data: [0, 31, 40, 28, 51, 42, 109, 100],
+        name: 'Iphone 13',
+        data: [0, 31, 40, 28, 51, 42, 109, 100]
       },
       {
-        name: "Oneplue 9",
-        data: [0, 11, 32, 45, 32, 34, 52, 41],
-      },
+        name: 'Oneplue 9',
+        data: [0, 11, 32, 45, 32, 34, 52, 41]
+      }
     ],
     options: {
       chart: {
-        type: "area",
+        type: 'area'
       },
       dataLabels: {
-        enabled: false,
+        enabled: false
       },
       grid: {
         strokeDashArray: 3,
-        borderColor: "rgba(0,0,0,0.1)",
+        borderColor: 'rgba(0,0,0,0.1)'
       },
 
       stroke: {
-        curve: "smooth",
-        width: 1,
+        curve: 'smooth',
+        width: 1
       },
       xaxis: {
         categories: [
-          "Jan",
-          "Feb",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "Aug",
-        ],
-      },
-    },
+          'Jan',
+          'Feb',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'Aug'
+        ]
+      }
+    }
   };
   return (
     <Card>

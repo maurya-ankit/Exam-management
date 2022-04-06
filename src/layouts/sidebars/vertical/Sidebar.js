@@ -1,7 +1,7 @@
-import { Button, Nav, NavItem } from "reactstrap";
-import Logo from "../../logo/Logo";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { Button, Nav, NavItem } from 'reactstrap';
+import Logo from '../../logo/Logo';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const navigation = [
   // {
@@ -10,30 +10,30 @@ const navigation = [
   //   icon: "bi bi-speedometer2",
   // },
   {
-    title: "Users",
-    href: "/admin/users",
-    icon: "bi bi-person-circle",
+    title: 'Users',
+    href: '/admin/users',
+    icon: 'bi bi-person-circle'
   },
   {
-    title: "Add Course",
-    href: "/admin/add_course",
-    icon: "bi bi-gear",
+    title: 'Add Course',
+    href: '/admin/add_course',
+    icon: 'bi bi-gear'
   },
   {
-    title: "Grade Range",
-    href: "/admin/grade_range",
-    icon: "bi bi-bar-chart-line",
+    title: 'Grade Range',
+    href: '/admin/grade_range',
+    icon: 'bi bi-bar-chart-line'
   },
   {
-    title: "Students",
-    href: "/admin/students",
-    icon: "bi bi-person-lines-fill",
+    title: 'Students',
+    href: '/admin/students',
+    icon: 'bi bi-person-lines-fill'
   },
   {
-    title: "Result",
-    href: "/result",
-    icon: "bi bi-file-earmark-bar-graph",
-  },
+    title: 'Result',
+    href: '/result',
+    icon: 'bi bi-file-earmark-bar-graph'
+  }
   // {
   //   title: "Alert",
   //   href: "/ui/alerts",
@@ -104,8 +104,8 @@ const Sidebar = ({ showMobilemenu }) => {
                 <a
                   className={
                     location === navi.href
-                      ? "text-primary nav-link py-3"
-                      : "nav-link text-secondary py-3"
+                      ? 'text-primary nav-link py-3'
+                      : 'nav-link text-secondary py-3'
                   }
                 >
                   <i className={navi.icon}></i>
