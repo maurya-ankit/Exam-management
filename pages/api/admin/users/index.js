@@ -1,6 +1,8 @@
 import dbConnect from '../../../../lib/dbConnect';
 import nc from 'next-connect';
 import Admin from '../../../../models/admin';
+import { getToken } from "next-auth/jwt"
+const secret = process.env.NEXTAUTH_SECRET
 
 const handler = nc({
   onError: (err, req, res, next) => {
@@ -19,6 +21,8 @@ handler.use(async (req, res, next) => {
 
 handler.get(async (req, res) => {
   try {
+    const token = await getToken({ req, secret })
+    console.log(token)
     const role = req.query.role ? req.query.role : 'admin';
     const admins = await Admin.find({ role });
     return res.status(200).json(admins);
