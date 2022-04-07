@@ -8,9 +8,9 @@ export async function middleware(req) {
         console.log(new URL('/error/loginRequired', req.url))
         return NextResponse.redirect(new URL('/error/loginRequired', req.url))
     }
-    if(!(token.role==='faculty' || token.role==='admin')) {
-        console.log(new URL('/error/adminAndFaculty', req.url))
-        return NextResponse.redirect(new URL('/error/adminAndFaculty', req.url))
+    if(token.role!=='admin') {
+        console.log(new URL('/error/onlyAdmin', req.url))
+        return NextResponse.rewrite(new URL('/error/onlyAdmin', req.url))
     }
     console.log({user: token.email, role: token.role, url: req.url})
 }
