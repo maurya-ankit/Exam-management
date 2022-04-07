@@ -22,7 +22,6 @@ handler.use(async (req, res, next) => {
 handler.get(async (req, res) => {
   try {
     const token = await getToken({ req, secret })
-    console.log(token)
     const role = req.query.role ? req.query.role : 'admin';
     const admins = await Admin.find({ role });
     return res.status(200).json(admins);
