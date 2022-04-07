@@ -46,46 +46,10 @@ const Header = ({ showMobmenu }) => {
           <i className="bi bi-list"></i>
         </Button>
       </div>
-      <div className="hstack gap-2">
-        <Button
-          color="primary"
-          size="sm"
-          className="d-sm-block d-md-none"
-          onClick={Handletoggle}
-        >
-          {isOpen ? (
-            <i className="bi bi-x"></i>
-          ) : (
-            <i className="bi bi-three-dots-vertical"></i>
-          )}
-        </Button>
-      </div>
-
-      <Collapse navbar isOpen={isOpen}>
         <Nav className="me-auto" navbar>
-          {/* <NavItem>
-            <Link href="/">
-              <a className="nav-link">Starter</a>
-            </Link>
-          </NavItem>
-          <NavItem>
-            <Link href="/about">
-              <a className="nav-link">About</a>
-            </Link>
-          </NavItem>
-          <UncontrolledDropdown inNavbar nav>
-            <DropdownToggle caret nav>
-              DD Menu
-            </DropdownToggle>
-            <DropdownMenu end>
-              <DropdownItem>Option 1</DropdownItem>
-              <DropdownItem>Option 2</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>Reset</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown> */}
+          
         </Nav>
-        <Dropdown isOpen={dropdownOpen} toggle={toggle}>
+        <Dropdown isOpen={dropdownOpen} toggle={toggle} direction="end">
           <DropdownToggle color="primary">
             <div style={{ lineHeight: '0px' }}>
               <Image
@@ -105,7 +69,6 @@ const Header = ({ showMobmenu }) => {
             <DropdownItem onClick={() => signOut()}>Logout</DropdownItem>
           </DropdownMenu>
         </Dropdown>
-      </Collapse>
     </Navbar>
   );
 };

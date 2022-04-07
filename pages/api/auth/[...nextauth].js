@@ -3,6 +3,7 @@ import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
 import clientPromise from '../../../lib/mongodb';
 import Admin from '../../../models/admin'
+import dbConnect from '../../../lib/dbConnect';
 export default NextAuth({
   // Configure one or more authentication providers
   adapter: MongoDBAdapter(clientPromise),
@@ -26,6 +27,7 @@ export default NextAuth({
     },
     async jwt({ token }) {
       if (token) {
+        await dbConnect();
         const result = await Admin.findOne({ email: token.email })
         if (result) {
           token.role = result.role;
@@ -35,6 +37,20 @@ export default NextAuth({
         }
       }
       return token
+    },
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token from a provider.
+      if (session) {
+        await dbConnect();
+        const result = await Admin.findOne({ email: token.email })
+        if (result) {
+          session.user.role = result.role;
+        }
+        else {
+          session.user.role = "student"
+        }
+      }
+      return session
     }
   }
 });

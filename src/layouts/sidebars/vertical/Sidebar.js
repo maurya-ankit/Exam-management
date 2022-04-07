@@ -2,13 +2,9 @@ import { Button, Nav, NavItem } from 'reactstrap';
 import Logo from '../../logo/Logo';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-
-const navigation = [
-  // {
-  //   title: "Dashboard",
-  //   href: "/",
-  //   icon: "bi bi-speedometer2",
-  // },
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from 'react';
+const adminNavigation = [
   {
     title: 'Users',
     href: '/admin/users',
@@ -28,62 +24,48 @@ const navigation = [
     title: 'Students',
     href: '/admin/students',
     icon: 'bi bi-person-lines-fill'
+  }
+];
+const facultyNavigation = [
+  {
+    title: 'News Feed',
+    href: '/newsfeed',
+    icon: 'bi bi-file-earmark-bar-graph'
+  },
+  {
+    title: 'Grade Range',
+    href: '/admin/grade_range',
+    icon: 'bi bi-bar-chart-line'
+  },
+];
+const studentNavigation = [
+  {
+    title: 'News Feed',
+    href: '/newsfeed',
+    icon: 'bi bi-file-earmark-bar-graph'
   },
   {
     title: 'Result',
     href: '/result',
     icon: 'bi bi-file-earmark-bar-graph'
-  }
-  // {
-  //   title: "Alert",
-  //   href: "/ui/alerts",
-  //   icon: "bi bi-bell",
-  // },
-  // {
-  //   title: "Badges",
-  //   href: "/ui/badges",
-  //   icon: "bi bi-patch-check",
-  // },
-  // {
-  //   title: "Buttons",
-  //   href: "/ui/buttons",
-  //   icon: "bi bi-hdd-stack",
-  // },
-  // {
-  //   title: "Cards",
-  //   href: "/ui/cards",
-  //   icon: "bi bi-card-text",
-  // },
-  // {
-  //   title: "Grid",
-  //   href: "/ui/grid",
-  //   icon: "bi bi-columns",
-  // },
-  // {
-  //   title: "Table",
-  //   href: "/ui/tables",
-  //   icon: "bi bi-layout-split",
-  // },
-  // {
-  //   title: "Forms",
-  //   href: "/ui/forms",
-  //   icon: "bi bi-textarea-resize",
-  // },
-  // {
-  //   title: "Breadcrumbs",
-  //   href: "/ui/breadcrumbs",
-  //   icon: "bi bi-link",
-  // },
-  // {
-  //   title: "About",
-  //   href: "/about",
-  //   icon: "bi bi-people",
-  // },
+  },
 ];
 
 const Sidebar = ({ showMobilemenu }) => {
   let curl = useRouter();
+  const { data: session, status } = useSession();
   const location = curl.pathname;
+  const [navigation, setNavigation] = useState([]);
+  console.log(session);
+  useEffect(() => {
+    if (session?.user.role === 'admin') {
+      setNavigation(adminNavigation);
+    } else if (session?.user.role === 'faculty') {
+      setNavigation(facultyNavigation);
+    } else if (session?.user.role === 'student') {
+      setNavigation(studentNavigation);
+    }
+  }, [session]);
 
   return (
     <div className="p-3">
