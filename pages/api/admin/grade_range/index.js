@@ -1,39 +1,39 @@
-import dbConnect from '../../../../lib/dbConnect';
-import GradeRange from '../../../../models/gradeRange';
-
 import nc from 'next-connect';
 
+import databaseConnect from '../../../../lib/databaseConnect';
+import GradeRange from '../../../../models/gradeRange';
+
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
 
-handler.get(async (req, res) => {
-  const { academicYear, semester, courseCode } = req.query;
+handler.get(async (request, response) => {
+  const { academicYear, semester, courseCode } = request.query;
   const gradeRanges = await GradeRange.find({
     academicYear,
     semester,
     courseCode
   });
-  res.status(200).json(gradeRanges);
+  response.status(200).json(gradeRanges);
 });
-handler.post(async (req, res) => {
+handler.post(async (request, response) => {
   try {
-    const gradeRange = await GradeRange.create(req.body);
+    const gradeRange = await GradeRange.create(request.body);
     // Process a POST request
-    res.status(201).json({ success: true, data: gradeRange });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: gradeRange });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 

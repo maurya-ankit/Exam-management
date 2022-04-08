@@ -13,61 +13,11 @@ import {
   Row,
   Table
 } from 'reactstrap';
-import dbConnect from '../../lib/dbConnect';
+
+import databaseConnect from '../../lib/databaseConnect';
 import Course from '../../models/course';
 import StudentGrade from '../../models/studentGrade';
 import Students from '../../models/students';
-const data = {
-  name: 'Ankit Maurya',
-  yearOfAdmission: '2018',
-  program: 'B.Tech',
-  branch: 'Computer Science and Engineering',
-  semester: 'III',
-  academicYear: '2019-2020',
-  MIS: '111815007',
-  course: [
-    {
-      courseCode: 'BT12109',
-      courseName: 'Object Oriented Programming System',
-      courseCredit: '3',
-      gradeEarned: 'B+'
-    },
-    {
-      courseCode: 'BT22106',
-      courseName: 'Object Oriented Programming System Lab',
-      courseCredit: '1',
-      gradeEarned: 'A-'
-    },
-    {
-      courseCode: 'BT12403',
-      courseName: 'Probabiltiy and Statistics processes',
-      courseCredit: '3',
-      gradeEarned: 'B-'
-    },
-    {
-      courseCode: 'BT12101',
-      courseName: 'Analysis and Design of Algorithms',
-      courseCredit: '3',
-      gradeEarned: 'C+'
-    },
-    {
-      courseCode: 'BT22101',
-      courseName: 'Analysis and Design of Algorithms Lab',
-      courseCredit: '1',
-      gradeEarned: 'B+'
-    }
-  ],
-  currentSem: {
-    credit: '24',
-    gradePointEarned: '155',
-    SGPA: '6.46'
-  },
-  cumulativeSem: {
-    credit: '71',
-    gradePointEarned: '472',
-    CGPA: '6.65'
-  }
-};
 
 const gradePoint = {
   O: 10,
@@ -164,7 +114,7 @@ function Result({ data }) {
             </thead>
             <tbody>
               {data.course.map((course, index) => (
-                <tr scope="row" key={index}>
+                <tr key={index}>
                   <td>{course.courseCode}</td>
                   <td>{course.courseName}</td>
                   <td>{course.courseCredit}</td>
@@ -244,7 +194,7 @@ function Result({ data }) {
 export default Result;
 
 export async function getServerSideProps(context) {
-  await dbConnect();
+  await databaseConnect();
   const { sem } = context.query;
   const email = 'ankitmaurya18@cse.iiitp.ac.in';
   let semInfo = await Students.findOne({ email: email });
@@ -272,11 +222,12 @@ export async function getServerSideProps(context) {
   semInfo['academicYear'] = data['academicYear'];
   const currentSem = {};
   currentSem.credit = semInfo.course.reduce(
-    (acc, item) => acc + item.courseCredit,
+    (accumulator, item) => accumulator + item.courseCredit,
     0
   );
   currentSem.gradePointEarned = semInfo.course.reduce(
-    (acc, item) => acc + item.courseCredit * gradePoint[item.gradeEarned],
+    (accumulator, item) =>
+      accumulator + item.courseCredit * gradePoint[item.gradeEarned],
     0
   );
   currentSem.SGPA = currentSem.gradePointEarned / currentSem.credit;

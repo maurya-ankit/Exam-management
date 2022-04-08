@@ -1,15 +1,15 @@
 import {
-  Card,
-  Row,
-  Col,
-  CardTitle,
-  CardBody,
   Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
   Form,
   FormGroup,
-  Label,
+  FormText,
   Input,
-  FormText
+  Label,
+  Row
 } from 'reactstrap';
 
 const Forms = () => {

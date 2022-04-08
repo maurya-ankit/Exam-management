@@ -1,9 +1,10 @@
-import GoogleProvider from 'next-auth/providers/google';
-import NextAuth from 'next-auth';
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+
+import databaseConnect from '../../../lib/databaseConnect';
 import clientPromise from '../../../lib/mongodb';
-import Admin from '../../../models/admin'
-import dbConnect from '../../../lib/dbConnect';
+import Admin from '../../../models/admin';
 export default NextAuth({
   // Configure one or more authentication providers
   adapter: MongoDBAdapter(clientPromise),
@@ -17,40 +18,30 @@ export default NextAuth({
     strategy: 'jwt'
   },
   callbacks: {
-    async signIn({ account, profile }) {
-      console.log(profile)
-      if (account.provider === 'google') {
-        // if (!profile.email.endsWith('iiitp.ac.in')) return false;
-        return true;
-      }
+    async signIn({ profile }) {
+      console.log(profile);
+      // if (account.provider === 'google') {
+      //   // if (!profile.email.endsWith('iiitp.ac.in')) return false;
+      //   return true;
+      // }
       return true; // Do different verification for other providers that don't have `email_verified`
     },
     async jwt({ token }) {
       if (token) {
-        await dbConnect();
-        const result = await Admin.findOne({ email: token.email })
-        if (result) {
-          token.role = result.role;
-        }
-        else {
-          token.role = "student"
-        }
+        await databaseConnect();
+        const result = await Admin.findOne({ email: token.email });
+        token.role = result ? result.role : 'student';
       }
-      return token
+      return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       // Send properties to the client, like an access_token from a provider.
       if (session) {
-        await dbConnect();
-        const result = await Admin.findOne({ email: token.email })
-        if (result) {
-          session.user.role = result.role;
-        }
-        else {
-          session.user.role = "student"
-        }
+        await databaseConnect();
+        const result = await Admin.findOne({ email: token.email });
+        session.user.role = result ? result.role : 'student';
       }
-      return session
+      return session;
     }
   }
 });

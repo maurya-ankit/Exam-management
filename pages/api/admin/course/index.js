@@ -1,31 +1,32 @@
-import dbConnect from '../../../../lib/dbConnect';
-import Course from '../../../../models/course';
 import nc from 'next-connect';
 
+import databaseConnect from '../../../../lib/databaseConnect';
+import Course from '../../../../models/course';
+
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
-handler.get(async (req, res) => {
+handler.get(async (request, response) => {
   const courses = await Course.find({});
-  res.status(200).json(courses);
+  response.status(200).json(courses);
 });
-handler.post(async (req, res) => {
+handler.post(async (request, response) => {
   try {
-    const course = await Course.create(req.body);
-    res.status(201).json({ success: true, data: course });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    const course = await Course.create(request.body);
+    response.status(201).json({ success: true, data: course });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 

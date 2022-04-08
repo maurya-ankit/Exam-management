@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import {
   Alert,
-  UncontrolledAlert,
   Card,
   CardBody,
-  CardTitle
+  CardTitle,
+  UncontrolledAlert
 } from 'reactstrap';
-import Link from 'next/link';
 
 const Alerts = () => {
   // For Dismiss Button with Alert
@@ -158,7 +158,7 @@ const Alerts = () => {
         </CardTitle>
         <CardBody className="">
           <div>
-            <Alert color="info" isOpen={visible} toggle={onDismiss.bind(null)}>
+            <Alert color="info" isOpen={visible} toggle={onDismiss.bind()}>
               I am an alert and I can be dismissed!
             </Alert>
           </div>
@@ -193,7 +193,7 @@ const Alerts = () => {
             <Alert
               color="primary"
               isOpen={visible}
-              toggle={onDismiss.bind(null)}
+              toggle={onDismiss.bind()}
               fade={false}
             >
               I am a primary alert and I can be dismissed without animating!

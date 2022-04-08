@@ -28,10 +28,16 @@ module.exports = {
     'plugin:react-hooks/recommended'
   ],
   rules: {
-    'no-console': 'error',
+    // 'no-console': 'error',
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
-    'simple-import-sort/sort': 'error',
-    'unicorn/filename-case': 'off'
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+    'unicorn/filename-case': 'off',
+    'unicorn/prevent-abbreviations': 'off',
+    'jsx-a11y/anchor-is-valid': 'off',
+    'unicorn/no-nested-ternary': 'off',
+    'unicorn/no-array-for-each': 'off',
+    'unicorn/prefer-module': 'off'
   }
 };

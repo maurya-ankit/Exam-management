@@ -1,13 +1,13 @@
+import Link from 'next/link';
 import {
-  Row,
-  Col,
+  Breadcrumb,
+  BreadcrumbItem,
   Card,
   CardBody,
   CardTitle,
-  Breadcrumb,
-  BreadcrumbItem
+  Col,
+  Row
 } from 'reactstrap';
-import Link from 'next/link';
 
 const Breadcrumbs = () => {
   return (

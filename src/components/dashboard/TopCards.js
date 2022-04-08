@@ -1,5 +1,5 @@
-import { Card, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { Card, CardBody } from 'reactstrap';
 
 const TopCards = ({ bg, icon, earning, subtitle }) => {
   return (

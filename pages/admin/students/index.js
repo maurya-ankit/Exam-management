@@ -12,6 +12,7 @@ import {
   Label,
   Row
 } from 'reactstrap';
+
 import StudentList from '../../../src/components/admin/student/studentList';
 import CustomBreadcrumb from '../../../src/components/breadcrumb';
 const breadcrumbConfig = [
@@ -34,8 +35,8 @@ const breadcrumbConfig = [
 const yearOptions = () => {
   const currentYear = new Date().getFullYear();
   const yearOptions = [];
-  for (let i = 2016; i <= currentYear; i++) {
-    yearOptions.push(i);
+  for (let index = 2016; index <= currentYear; index++) {
+    yearOptions.push(index);
   }
   return yearOptions;
 };
@@ -58,32 +59,32 @@ function Index() {
     email: ''
   });
 
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleSubmit(event_) {
+    event_.preventDefault();
     axios
       .post('/api/admin/student', { ...filter, ...registerStudent })
-      .then(res => {
+      .then(response => {
         setRefetch(!refetch);
-        console.log(res);
+        console.log(response);
         setRegisterStudent({
           MIS: '',
           name: '',
           email: ''
         });
       })
-      .catch(err => console.log(err));
+      .catch(error => console.log(error));
   }
 
-  function handleEdit(e) {
-    e.preventDefault();
+  function handleEdit(event_) {
+    event_.preventDefault();
     axios
       .patch(`/api/admin/student/${registerStudent.MIS}`, {
         ...filter,
         ...registerStudent
       })
-      .then(res => {
+      .then(response => {
         setRefetch(!refetch);
-        console.log(res);
+        console.log(response);
         setRegisterStudent({
           MIS: '',
           name: '',
@@ -91,20 +92,20 @@ function Index() {
         });
         setEdit(false);
       })
-      .catch(err => console.log(err));
+      .catch(error => console.log(error));
   }
 
-  function handleOnFilterChange(e) {
+  function handleOnFilterChange(event_) {
     setFilter({
       ...filter,
-      [e.target.name]: e.target.value
+      [event_.target.name]: event_.target.value
     });
   }
 
-  function handleOnRegisterStudentChange(e) {
+  function handleOnRegisterStudentChange(event_) {
     setRegisterStudent({
       ...registerStudent,
-      [e.target.name]: e.target.value
+      [event_.target.name]: event_.target.value
     });
   }
   const reset = () => {

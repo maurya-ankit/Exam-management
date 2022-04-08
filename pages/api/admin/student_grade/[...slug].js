@@ -1,30 +1,28 @@
-import dbConnect from '../../../../lib/dbConnect';
-import GradeRange from '../../../../models/gradeRange';
-import StudentGrade from '../../../../models/studentGrade';
-
 import nc from 'next-connect';
 
+import databaseConnect from '../../../../lib/databaseConnect';
+import StudentGrade from '../../../../models/studentGrade';
+
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
 
-handler.get(async (req, res) => {});
-handler.patch(async (req, res) => {
+handler.patch(async (request, response) => {
   // get list of students with marks and grade from body
-  const { slug } = req.query;
+  const { slug } = request.query;
   const courseCode = slug[0];
-  const { students } = req.body;
+  const { students } = request.body;
   students.forEach(async student => {
     const a = await StudentGrade.findOneAndUpdate(
       {
@@ -33,7 +31,7 @@ handler.patch(async (req, res) => {
       },
       {
         $set: {
-          marks: parseInt(student.marks),
+          marks: Number.parseInt(student.marks),
           grade: student.grade
         }
       }
@@ -42,9 +40,6 @@ handler.patch(async (req, res) => {
       a
     });
   });
-  res.status(200).json({ success: true, message: 'Successfully updated' });
+  response.status(200).json({ success: true, message: 'Successfully updated' });
 });
-
-handler.delete(async (req, res) => {});
-
 export default handler;

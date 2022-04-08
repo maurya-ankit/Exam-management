@@ -1,10 +1,8 @@
 import axios from 'axios';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import {
   Alert,
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
   Card,
   CardBody,
@@ -15,12 +13,11 @@ import {
   Input,
   Label,
   Row,
-  Spinner,
   Table
 } from 'reactstrap';
-import CustomBreadcrumb from '../../../src/components/breadcrumb';
+
 import Course from '../../../models/course';
-import Skeleton from 'react-loading-skeleton';
+import CustomBreadcrumb from '../../../src/components/breadcrumb';
 const gradeOptions = [
   {
     grade: 'O',
@@ -82,34 +79,28 @@ const breadcrumbConfig = [
 function getAcademicYears() {
   let years = [];
   let currentYear = new Date().getFullYear();
-  for (let i = currentYear; i >= 2016; i--) {
-    years.push(`${i}-${i + 1}`);
+  for (let index = currentYear; index >= 2016; index--) {
+    years.push(`${index}-${index + 1}`);
   }
   return years;
 }
-
+const integerToRoman = {
+  1: 'I',
+  2: 'II',
+  3: 'III',
+  4: 'IV',
+  5: 'V',
+  6: 'VI',
+  7: 'VII',
+  8: 'VIII'
+};
 // generate semesters as int and romans
 function getSemesters() {
   let semesters = [];
-  for (let i = 1; i <= 8; i++) {
+  for (let index = 1; index <= 8; index++) {
     semesters.push({
-      semester: i,
-      roman:
-        i === 1
-          ? 'I'
-          : i === 2
-            ? 'II'
-            : i === 3
-              ? 'III'
-              : i === 4
-                ? 'IV'
-                : i === 5
-                  ? 'V'
-                  : i === 6
-                    ? 'VI'
-                    : i === 7
-                      ? 'VII'
-                      : 'VIII'
+      semester: index,
+      roman: integerToRoman[`${index}`]
     });
   }
   return semesters;
@@ -118,7 +109,10 @@ function getSemesters() {
 function GradeRange({ courses }) {
   const [gradeRanges, setGradeRanges] = useState(gradeOptions);
   const [students, setStudents] = useState([]);
-  const [accordionConfig, setAccordionConfig] = useState({ grade: false, student: true })
+  const [accordionConfig, setAccordionConfig] = useState({
+    grade: false,
+    student: true
+  });
   const [student, setStudent] = useState('');
   const academicYears = getAcademicYears();
   const semesters = getSemesters();
@@ -133,11 +127,11 @@ function GradeRange({ courses }) {
     gradeSubmission: false,
     studentSubmission: false,
     saveMarks: false
-  })
+  });
   const [marks, setMarks] = useState(students);
-  function handleSubmit(e) {
-    setLoading(prev => ({ ...prev, gradeSubmission: true }))
-    e.preventDefault();
+  function handleSubmit(event_) {
+    setLoading(previous => ({ ...previous, gradeSubmission: true }));
+    event_.preventDefault();
     const body = {
       academicYear: filters.academicYear,
       semester: filters.semester,
@@ -146,19 +140,19 @@ function GradeRange({ courses }) {
     };
     axios
       .post(`/api/admin/grade_range`, body)
-      .then(res => {
-        console.log(res);
+      .then(response => {
+        console.log(response);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       })
       .finally(() => {
-        setLoading(prev => ({ ...prev, gradeSubmission: false }))
-      })
+        setLoading(previous => ({ ...previous, gradeSubmission: false }));
+      });
   }
-  function handleUpdate(e) {
-    setLoading(prev => ({ ...prev, gradeSubmission: true }))
-    e.preventDefault();
+  function handleUpdate(event_) {
+    setLoading(previous => ({ ...previous, gradeSubmission: true }));
+    event_.preventDefault();
     const body = {
       academicYear: filters.academicYear,
       semester: filters.semester,
@@ -170,20 +164,19 @@ function GradeRange({ courses }) {
         `/api/admin/grade_range/${body.academicYear}/${body.semester}/${body.courseCode}`,
         body
       )
-      .then(res => {
-        console.log(res);
+      .then(response => {
+        console.log(response);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       })
       .finally(() => {
-        setLoading(prev => ({ ...prev, gradeSubmission: false }))
+        setLoading(previous => ({ ...previous, gradeSubmission: false }));
       });
-
   }
-  function handleAddStudent(e) {
-    setLoading(prev=>({...prev,studentSubmission:true}))
-    e.preventDefault();
+  function handleAddStudent(event_) {
+    setLoading(previous => ({ ...previous, studentSubmission: true }));
+    event_.preventDefault();
     setStudents([...students, student]);
     const body = {
       // academicYear: filters.academicYear,
@@ -199,21 +192,20 @@ function GradeRange({ courses }) {
     };
     axios
       .post(`/api/admin/student_grade`, body)
-      .then(res => {
-        console.log(res);
+      .then(response => {
+        console.log(response);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       })
-      .finally(()=>{
-    setLoading(prev=>({...prev,studentSubmission:false}))
-
-      })
+      .finally(() => {
+        setLoading(previous => ({ ...previous, studentSubmission: false }));
+      });
   }
-  function handleOnFilterChange(e) {
+  function handleOnFilterChange(event_) {
     setFilters({
       ...filters,
-      [e.target.name]: e.target.value
+      [event_.target.name]: event_.target.value
     });
   }
 
@@ -225,12 +217,12 @@ function GradeRange({ courses }) {
   function assignGrades() {
     // based on grade reanges, assign grades to students via marks
     const assigned = students.map(student => {
-      for (let i = 0; i < gradeRanges.length; i++) {
+      for (const gradeRange of gradeRanges) {
         if (
-          gradeRanges[i].min <= student.marks &&
-          gradeRanges[i].max >= student.marks
+          gradeRange.min <= student.marks &&
+          gradeRange.max >= student.marks
         ) {
-          student.grade = gradeRanges[i].grade;
+          student.grade = gradeRange.grade;
           break;
         }
       }
@@ -239,25 +231,25 @@ function GradeRange({ courses }) {
     handleSaveMarks(assigned);
   }
   useEffect(() => {
-    setLoading(prev => ({ ...prev, fetch: true }))
+    setLoading(previous => ({ ...previous, fetch: true }));
     axios
       .get(
         `/api/admin/grade_range/${filters.academicYear}/${filters.semester}/${filters.courseCode}`
       )
-      .then(res => {
-        setGradeRanges(res.data.ranges);
-        setStudents(res.data.students);
+      .then(response => {
+        setGradeRanges(response.data.ranges);
+        setStudents(response.data.students);
         setCreate(false);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
         setCreate(true);
         setGradeRanges(gradeOptions);
         setStudents([]);
       })
-      .finally(_ => {
-        setLoading(prev => ({ ...prev, fetch: false }))
-      })
+      .finally(() => {
+        setLoading(previous => ({ ...previous, fetch: false }));
+      });
   }, [filters]);
   return (
     <div>
@@ -321,15 +313,24 @@ function GradeRange({ courses }) {
         </Col>
       </Row>
       <Card>
-        <CardHeader onClick={() => setAccordionConfig(prev => ({ ...prev, grade: !prev.grade }))}>
-          <p>{accordionConfig.grade ?
-            <i class="bi bi-chevron-up"></i>
-            :
-            <i class="bi bi-chevron-down"></i>
+        <CardHeader
+          onClick={() =>
+            setAccordionConfig(previous => ({
+              ...previous,
+              grade: !previous.grade
+            }))
           }
-            <span className='mx-4'>Grade Range distribution</span></p>
+        >
+          <p>
+            {accordionConfig.grade ? (
+              <i className="bi bi-chevron-up"></i>
+            ) : (
+              <i className="bi bi-chevron-down"></i>
+            )}
+            <span className="mx-4">Grade Range distribution</span>
+          </p>
         </CardHeader>
-        {accordionConfig.grade &&
+        {accordionConfig.grade && (
           <CardBody>
             <Table borderless>
               <tbody>
@@ -380,8 +381,8 @@ function GradeRange({ courses }) {
                         min={0}
                         max={100}
                         value={grade.min}
-                        onChange={e => {
-                          grade.min = e.target.value;
+                        onChange={event_ => {
+                          grade.min = event_.target.value;
                           setGradeRanges([...gradeRanges]);
                         }}
                       />
@@ -398,8 +399,8 @@ function GradeRange({ courses }) {
                         min={0}
                         max={100}
                         value={grade.max}
-                        onChange={e => {
-                          grade.max = e.target.value;
+                        onChange={event_ => {
+                          grade.max = event_.target.value;
                           setGradeRanges([...gradeRanges]);
                         }}
                       />
@@ -411,7 +412,8 @@ function GradeRange({ courses }) {
                 Submit
               </Button>
             </Form>
-          </CardBody>}
+          </CardBody>
+        )}
       </Card>
       {create ? (
         <>
@@ -433,8 +435,8 @@ function GradeRange({ courses }) {
                         type="text"
                         name="MIS"
                         value={student}
-                        onChange={e => {
-                          setStudent(e.target.value);
+                        onChange={event_ => {
+                          setStudent(event_.target.value);
                         }}
                       />
                     </Col>
@@ -463,35 +465,41 @@ function GradeRange({ courses }) {
                   </tr>
                 </thead>
                 <tbody>
-                  
-                  {loading.fetch
-                  ?
-                  <tr>
-                      <td><Skeleton/></td>
-                      <td><Skeleton/></td>
-                      <td width={100}>
-                      <Skeleton/>
+                  {loading.fetch ? (
+                    <tr>
+                      <td>
+                        <Skeleton />
                       </td>
-                      <td><Skeleton/></td>
-                    </tr>
-                    :students.map((student, index) => (
-                    <tr key={index}>
-                      <td>{student.MIS}</td>
-                      <td>{student.name}</td>
-                      <td width={100}>
-                        <Input
-                          value={student.marks}
-                          onChange={e => {
-                            student.marks = e.target.value;
-                            setMarks([...marks]);
-                          }}
-                          type="number"
-                          min={0}
-                        />
+                      <td>
+                        <Skeleton />
                       </td>
-                      <td>{student.grade}</td>
+                      <td width={100}>
+                        <Skeleton />
+                      </td>
+                      <td>
+                        <Skeleton />
+                      </td>
                     </tr>
-                  ))}
+                  ) : (
+                    students.map((student, index) => (
+                      <tr key={index}>
+                        <td>{student.MIS}</td>
+                        <td>{student.name}</td>
+                        <td width={100}>
+                          <Input
+                            value={student.marks}
+                            onChange={event_ => {
+                              student.marks = event_.target.value;
+                              setMarks([...marks]);
+                            }}
+                            type="number"
+                            min={0}
+                          />
+                        </td>
+                        <td>{student.grade}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </Table>
               <Button className="float-end" onClick={assignGrades}>
@@ -513,8 +521,7 @@ function GradeRange({ courses }) {
 
 export default GradeRange;
 
-// get serversideprops
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   let courses = await Course.find();
   courses = JSON.parse(JSON.stringify(courses));
   return {

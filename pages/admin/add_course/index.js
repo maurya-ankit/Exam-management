@@ -1,49 +1,20 @@
 import axios from 'axios';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import {
-  Row,
-  Col,
+  Button,
   Card,
+  CardBody,
   CardTitle,
+  Col,
   Form,
   FormGroup,
-  Label,
   Input,
-  Button,
-  CardBody,
-  Table,
-  CardFooter,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Breadcrumb,
-  BreadcrumbItem
+  Label,
+  Row,
+  Table
 } from 'reactstrap';
-import CustomBreadcrumb from '../../../src/components/breadcrumb';
 
-const courses = [
-  {
-    courseCode: 'CSE 101',
-    courseName: 'Introduction to Computer Science',
-    credit: 3
-  },
-  {
-    courseCode: 'CSE 102',
-    courseName: 'Introduction to Computer Science',
-    credit: 3
-  },
-  {
-    courseCode: 'CSE 103',
-    courseName: 'Introduction to Computer Science',
-    credit: 3
-  },
-  {
-    courseCode: 'CSE 104',
-    courseName: 'Introduction to Computer Science',
-    credit: 3
-  }
-];
+import CustomBreadcrumb from '../../../src/components/breadcrumb';
 
 const breadcrumbConfig = [
   {
@@ -71,21 +42,21 @@ function AddCourse() {
   useEffect(() => {
     axios
       .get('/api/admin/course')
-      .then(res => {
-        setCourses(res.data);
+      .then(response => {
+        setCourses(response.data);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   }, [refetch]);
-  function handleSubmit(e) {
-    e.preventDefault();
+  function handleSubmit(event_) {
+    event_.preventDefault();
     console.log('Form submitted');
     console.log(createCourse);
     axios
       .post('/api/admin/course', createCourse)
-      .then(res => {
-        console.log(res);
+      .then(response => {
+        console.log(response);
         setCreateCourse({
           courseCode: '',
           courseName: '',
@@ -93,18 +64,18 @@ function AddCourse() {
         });
         setRefetch(!refetch);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   }
-  function handleUpdateSubmit(e) {
-    e.preventDefault();
+  function handleUpdateSubmit(event_) {
+    event_.preventDefault();
     console.log('Form submitted');
     console.log(createCourse);
     axios
       .patch('/api/admin/course/' + createCourse.courseCode, createCourse)
-      .then(res => {
-        console.log(res);
+      .then(response => {
+        console.log(response);
         setCreateCourse({
           courseCode: '',
           courseName: '',
@@ -113,13 +84,13 @@ function AddCourse() {
         setRefetch(!refetch);
         setEdit(false);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   }
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+  function handleChange(event_) {
+    const { name, value } = event_.target;
     setCreateCourse({
       ...createCourse,
       [name]: value
@@ -136,12 +107,12 @@ function AddCourse() {
   const deleteCourse = courseCode => {
     axios
       .delete('/api/admin/course/' + courseCode)
-      .then(res => {
-        console.log(res);
+      .then(response => {
+        console.log(response);
         setRefetch(!refetch);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   };
 

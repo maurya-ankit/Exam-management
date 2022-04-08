@@ -1,10 +1,7 @@
-import React from "react";
+import React from 'react';
 
 function LoginRequired() {
-    return ( <React.Fragment>
-        Login Required
-        
-    </React.Fragment> );
+  return <React.Fragment>Login Required</React.Fragment>;
 }
 
 export default LoginRequired;

@@ -1,40 +1,41 @@
-import dbConnect from '../../../../lib/dbConnect';
-import Course from '../../../../models/course';
 import nc from 'next-connect';
 
+import databaseConnect from '../../../../lib/databaseConnect';
+import Course from '../../../../models/course';
+
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
 
-handler.get(async (req, res) => {
-  const { courseCode } = req.query;
+handler.get(async (request, response) => {
+  const { courseCode } = request.query;
   const course = await Course.findOne({
     courseCode
   });
   if (!course) {
-    return res.status(404).json({
+    return response.status(404).json({
       success: false,
       error: 'Course not found'
     });
   }
-  res.status(200).json({ course });
+  response.status(200).json({ course });
 });
 
-handler.patch(async (req, res) => {
-  const { courseCode } = req.query;
+handler.patch(async (request, response) => {
+  const { courseCode } = request.query;
   try {
-    let body = { ...req.body };
+    let body = { ...request.body };
     delete body.courseCode;
     const course = await Course.findOneAndUpdate(
       {
@@ -42,21 +43,21 @@ handler.patch(async (req, res) => {
       },
       body
     );
-    res.status(201).json({ success: true, data: course });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: course });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 
-handler.delete(async (req, res) => {
-  const { courseCode } = req.query;
+handler.delete(async (request, response) => {
+  const { courseCode } = request.query;
   try {
     const course = await Course.findOneAndDelete({
       courseCode
     });
-    res.status(201).json({ success: true, data: course });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: course });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 

@@ -1,34 +1,35 @@
-import dbConnect from '../../../../lib/dbConnect';
-import Student from '../../../../models/students';
 import nc from 'next-connect';
 
+import databaseConnect from '../../../../lib/databaseConnect';
+import Student from '../../../../models/students';
+
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
 
-handler.get(async (req, res) => {
-  const { MIS } = req.query;
+handler.get(async (request, response) => {
+  const { MIS } = request.query;
   const student = await Student.findOne({
     MIS
   });
-  res.status(200).json(student);
+  response.status(200).json(student);
 });
 
-handler.patch(async (req, res) => {
-  const { MIS } = req.query;
+handler.patch(async (request, response) => {
+  const { MIS } = request.query;
   try {
-    let body = { ...req.body };
+    let body = { ...request.body };
     delete body.MIS;
     const student = await Student.findOneAndUpdate(
       {
@@ -37,22 +38,22 @@ handler.patch(async (req, res) => {
       body
     );
     // Process a POST request
-    res.status(201).json({ success: true, data: student });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: student });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 
-handler.delete(async (req, res) => {
-  const { MIS } = req.query;
+handler.delete(async (request, response) => {
+  const { MIS } = request.query;
   try {
     const student = await Student.findOneAndDelete({
       MIS: MIS
     });
     // Process a POST request
-    res.status(201).json({ success: true, data: student });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: student });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 

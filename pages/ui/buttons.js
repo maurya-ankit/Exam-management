@@ -5,19 +5,19 @@ import {
   Card,
   CardBody,
   CardTitle,
-  Row,
-  Col
+  Col,
+  Row
 } from 'reactstrap';
 
 const Buttons = () => {
   const [cSelected, setCSelected] = useState([]);
-  const [rSelected, setRSelected] = useState(null);
+  const [rSelected, setRSelected] = useState();
 
-  const onRadioBtnClick = vSelected => {
+  const onRadioButtonClick = vSelected => {
     setRSelected(vSelected);
   };
 
-  const onCheckboxBtnClick = selected => {
+  const onCheckboxButtonClick = selected => {
     const index = cSelected.indexOf(selected);
     if (index < 0) {
       cSelected.push(selected);
@@ -216,21 +216,21 @@ const Buttons = () => {
               <ButtonGroup>
                 <Button
                   color="primary"
-                  onClick={() => onCheckboxBtnClick(1)}
+                  onClick={() => onCheckboxButtonClick(1)}
                   active={cSelected.includes(1)}
                 >
                   One
                 </Button>
                 <Button
                   color="primary"
-                  onClick={() => onCheckboxBtnClick(2)}
+                  onClick={() => onCheckboxButtonClick(2)}
                   active={cSelected.includes(2)}
                 >
                   Two
                 </Button>
                 <Button
                   color="primary"
-                  onClick={() => onCheckboxBtnClick(3)}
+                  onClick={() => onCheckboxButtonClick(3)}
                   active={cSelected.includes(3)}
                 >
                   Three
@@ -253,21 +253,21 @@ const Buttons = () => {
               <ButtonGroup>
                 <Button
                   color="primary"
-                  onClick={() => onRadioBtnClick(1)}
+                  onClick={() => onRadioButtonClick(1)}
                   active={rSelected === 1}
                 >
                   One
                 </Button>
                 <Button
                   color="primary"
-                  onClick={() => onRadioBtnClick(2)}
+                  onClick={() => onRadioButtonClick(2)}
                   active={rSelected === 2}
                 >
                   Two
                 </Button>
                 <Button
                   color="primary"
-                  onClick={() => onRadioBtnClick(3)}
+                  onClick={() => onRadioButtonClick(3)}
                   active={rSelected === 3}
                 >
                   Three

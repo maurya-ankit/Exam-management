@@ -1,27 +1,27 @@
-import dbConnect from '../../../../lib/dbConnect';
-import StudentGrade from '../../../../models/studentGrade';
-
 import nc from 'next-connect';
+
+import databaseConnect from '../../../../lib/databaseConnect';
 import GradeRange from '../../../../models/gradeRange';
+import StudentGrade from '../../../../models/studentGrade';
 import Students from '../../../../models/students';
 
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
 
-handler.get(async (req, res) => {
-  const { academicYear, semester, courseCode } = req.query;
+handler.get(async (request, response) => {
+  const { academicYear, semester, courseCode } = request.query;
   const gradeRange = await GradeRange.findOne(
     { academicYear, semester, courseCode },
     {
@@ -29,7 +29,7 @@ handler.get(async (req, res) => {
     }
   );
   if (!gradeRange) {
-    res.status(404).end('Page is not found');
+    response.status(404).end('Page is not found');
   }
   const studentGrade = await StudentGrade.find(
     // multi-match
@@ -46,19 +46,20 @@ handler.get(async (req, res) => {
       ]
     }
   );
-  res.status(200).json(studentGrade);
+  response.status(200).json(studentGrade);
 });
-handler.post(async (req, res) => {
+handler.post(async (request, response) => {
   try {
-    const { MIS, courseCode, marks, grade, academicYear, semester } = req.body;
-    console.log(req.body);
+    const { MIS, courseCode, marks, grade, academicYear, semester } =
+      request.body;
+    console.log(request.body);
     const studentGrade = await StudentGrade.create({
       MIS,
       courseCode,
       marks,
       grade
     });
-    const gradeRange = await GradeRange.findOneAndUpdate(
+    await GradeRange.findOneAndUpdate(
       {
         academicYear,
         semester,
@@ -86,7 +87,7 @@ handler.post(async (req, res) => {
     console.log(student);
     if (!student.modifiedCount) {
       // first create semester and add course
-      const student = await Students.findOneAndUpdate(
+      await Students.findOneAndUpdate(
         {
           MIS
         },
@@ -101,9 +102,9 @@ handler.post(async (req, res) => {
         }
       );
     }
-    res.status(201).json({ success: true, data: studentGrade });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: studentGrade });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 

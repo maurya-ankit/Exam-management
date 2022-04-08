@@ -1,14 +1,13 @@
+import Image from 'next/image';
+import PropTypes from 'prop-types';
 import {
+  Button,
   Card,
   CardBody,
-  CardImg,
   CardSubtitle,
   CardText,
-  CardTitle,
-  Button
+  CardTitle
 } from 'reactstrap';
-import PropTypes from 'prop-types';
-import Image from 'next/image';
 
 const Blog = ({ image, title, subtitle, text, color }) => {
   return (

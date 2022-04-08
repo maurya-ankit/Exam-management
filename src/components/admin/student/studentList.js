@@ -11,25 +11,7 @@ import {
   Table
 } from 'reactstrap';
 
-const studentsData = [
-  {
-    MIS: '1',
-    name: 'Ankit',
-    email: 'ankit@cse.iiitp.ac.in'
-  },
-  {
-    MIS: '2',
-    name: 'Ashish',
-    email: 'ashish@cse.iiitp.ac.in'
-  },
-  {
-    MIS: '3',
-    name: 'Sachin',
-    email: 'sachin@cse.iiitp.ac.in'
-  }
-];
-
-function StudentList(props) {
+function StudentList(properties) {
   const [search, setSearch] = useState('');
   const [students, setStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
@@ -41,22 +23,22 @@ function StudentList(props) {
     setRegisterStudent,
     setEdit,
     setRefetch
-  } = props;
+  } = properties;
   useEffect(() => {
-    const params = {
+    const parameters = {
       yearOfAdmission,
       program,
       branch
     };
     axios
-      .get('/api/admin/student', { params })
-      .then(res => {
+      .get('/api/admin/student', { params: parameters })
+      .then(response => {
         // sort by MIS
-        const sortedStudents = res.data.sort((a, b) => a.MIS - b.MIS);
+        const sortedStudents = response.data.sort((a, b) => a.MIS - b.MIS);
         setStudents(sortedStudents);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   }, [branch, program, yearOfAdmission, refetch]);
   useEffect(() => {
@@ -82,11 +64,11 @@ function StudentList(props) {
   function deleteStudent(MIS) {
     axios
       .delete(`/api/admin/student/${MIS}`)
-      .then(res => {
+      .then(() => {
         setRefetch(!refetch);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   }
   return (
@@ -97,7 +79,7 @@ function StudentList(props) {
           <Col></Col>
           <Col>
             <Input
-              onChange={e => setSearch(e.target.value)}
+              onChange={event_ => setSearch(event_.target.value)}
               value={search}
               placeholder="Search"
             />

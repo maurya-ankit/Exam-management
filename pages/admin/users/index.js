@@ -28,11 +28,11 @@ function Users() {
           role: formData.role
         }
       })
-      .then(res => {
-        setUsers(res.data);
+      .then(response => {
+        setUsers(response.data);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   }, [formData.role]);
 
@@ -40,7 +40,7 @@ function Users() {
     console.log(formData);
     axios
       .post('/api/admin/users', formData)
-      .then(res => {
+      .then(() => {
         setUsers([...users, formData]);
         setFormData({
           role: 'faculty',
@@ -48,8 +48,8 @@ function Users() {
           email: ''
         });
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        console.log(error);
       });
   };
 

@@ -1,35 +1,35 @@
-import dbConnect from '../../../../lib/dbConnect';
-import GradeRange from '../../../../models/gradeRange';
-
 import nc from 'next-connect';
+
+import databaseConnect from '../../../../lib/databaseConnect';
+import GradeRange from '../../../../models/gradeRange';
 import Students from '../../../../models/students';
 
 const handler = nc({
-  onError: (err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).end('Something broke!');
+  onError: (error, request, response) => {
+    console.error(error.stack);
+    response.status(500).end('Something broke!');
   },
-  onNoMatch: (req, res) => {
-    res.status(404).end('Page is not found');
+  onNoMatch: (request, response) => {
+    response.status(404).end('Page is not found');
   }
 });
 
-handler.use(async (req, res, next) => {
-  await dbConnect();
+handler.use(async (request, response, next) => {
+  await databaseConnect();
   next();
 });
 
-handler.use((req, res, next) => {
-  const { slug } = req.query;
+handler.use((request, response, next) => {
+  const { slug } = request.query;
   if (slug.length < 3) {
-    res.status(400).json({ success: false, message: 'Invalid slug' });
+    response.status(400).json({ success: false, message: 'Invalid slug' });
     return;
   }
   next();
 });
 
-handler.get(async (req, res) => {
-  const { slug } = req.query;
+handler.get(async (request, response) => {
+  const { slug } = request.query;
   const [academicYear, semester, courseCode] = slug;
   const gradeRangeStu = await GradeRange.findOne(
     { academicYear, semester, courseCode },
@@ -83,7 +83,7 @@ handler.get(async (req, res) => {
     }
   ]).exec();
   if (gradeRange.length === 0) {
-    return res.status(404).json({
+    return response.status(404).json({
       success: false,
       error: 'Grade range not found'
     });
@@ -98,13 +98,13 @@ handler.get(async (req, res) => {
     return stu;
   });
   console.log(gradeRange);
-  res.status(200).json(gradeRange);
+  response.status(200).json(gradeRange);
 });
-handler.patch(async (req, res) => {
-  const { slug } = req.query;
+handler.patch(async (request, response) => {
+  const { slug } = request.query;
   const [academicYear, semester, courseCode] = slug;
   try {
-    let body = { ...req.body };
+    let body = { ...request.body };
     if (body.academicYear) delete body.academicYear;
     if (body.semester) delete body.semester;
     if (body.courseCode) delete body.courseCode;
@@ -121,14 +121,14 @@ handler.patch(async (req, res) => {
       body,
       { new: true }
     );
-    res.status(201).json({ success: true, data: gradeRange });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: gradeRange });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 
-handler.delete(async (req, res) => {
-  const { slug } = req.query;
+handler.delete(async (request, response) => {
+  const { slug } = request.query;
   const [academicYear, semester, courseCode] = slug;
   try {
     const gradeRange = await GradeRange.findOneAndDelete({
@@ -136,9 +136,9 @@ handler.delete(async (req, res) => {
       semester,
       courseCode
     });
-    res.status(201).json({ success: true, data: gradeRange });
-  } catch (err) {
-    res.status(400).json({ success: false, error: err });
+    response.status(201).json({ success: true, data: gradeRange });
+  } catch (error) {
+    response.status(400).json({ success: false, error: error });
   }
 });
 

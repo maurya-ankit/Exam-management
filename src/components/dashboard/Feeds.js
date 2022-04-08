@@ -1,12 +1,12 @@
 import React from 'react';
 import {
+  Button,
   Card,
   CardBody,
+  CardSubtitle,
   CardTitle,
   ListGroup,
-  CardSubtitle,
-  ListGroupItem,
-  Button
+  ListGroupItem
 } from 'reactstrap';
 
 const FeedData = [
@@ -21,35 +21,35 @@ const FeedData = [
     title: 'New user registered.',
     icon: 'bi bi-person',
     color: 'info',
-    date: '6 minute ago',
+    date: '7 minute ago',
     id: 2
   },
   {
     title: 'Server #1 overloaded.',
     icon: 'bi bi-hdd',
     color: 'danger',
-    date: '6 minute ago',
+    date: '8 minute ago',
     id: 3
   },
   {
     title: 'New order received.',
     icon: 'bi bi-bag-check',
     color: 'success',
-    date: '6 minute ago',
+    date: '9 minute ago',
     id: 4
   },
   {
     title: 'Cras justo odio',
     icon: 'bi bi-bell',
     color: 'dark',
-    date: '6 minute ago',
+    date: '10 minute ago',
     id: 5
   },
   {
     title: 'Server #1 overloaded.',
     icon: 'bi bi-hdd',
     color: 'warning',
-    date: '6 minute ago',
+    date: '11 minute ago',
     id: 6
   }
 ];

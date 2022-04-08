@@ -1,5 +1,5 @@
-import { Card, CardBody, CardSubtitle, CardTitle } from 'reactstrap';
 import dynamic from 'next/dynamic';
+import { Card, CardBody, CardSubtitle, CardTitle } from 'reactstrap';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
