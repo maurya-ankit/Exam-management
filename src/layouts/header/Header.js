@@ -19,6 +19,7 @@ import user1 from '../../assets/images/users/user1.jpg';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
+import Skeleton from 'react-loading-skeleton';
 
 const Header = ({ showMobmenu }) => {
   const router = useRouter();
@@ -31,9 +32,6 @@ const Header = ({ showMobmenu }) => {
   };
   if (status === 'unauthenticated') {
     return router.push('/api/auth/signin');
-  }
-  if (status === 'loading') {
-    return <div>Loading</div>;
   }
 
   return (
@@ -52,21 +50,21 @@ const Header = ({ showMobmenu }) => {
         <Dropdown isOpen={dropdownOpen} toggle={toggle} direction="end">
           <DropdownToggle color="primary">
             <div style={{ lineHeight: '0px' }}>
-              <Image
+              {status === 'loading'?<Skeleton circle/>:<Image
                 src={session.user.image}
                 alt="profile"
                 className="rounded-circle"
                 width="30"
                 height="30"
-              />
+              />}
             </div>
           </DropdownToggle>
           <DropdownMenu>
             {/* <DropdownItem header>Info</DropdownItem> */}
-            <DropdownItem>My Account</DropdownItem>
+            <DropdownItem>{status === 'loading'?<Skeleton/>:"My Account"}</DropdownItem>
             {/* <DropdownItem>Edit Profile</DropdownItem>  */}
             <DropdownItem divider />
-            <DropdownItem onClick={() => signOut()}>Logout</DropdownItem>
+            <DropdownItem onClick={() => status === 'loading'?signOut():null}>{status === 'loading'?<Skeleton/>:"Logout"}</DropdownItem>
           </DropdownMenu>
         </Dropdown>
     </Navbar>

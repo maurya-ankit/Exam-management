@@ -15,10 +15,12 @@ import {
   Input,
   Label,
   Row,
+  Spinner,
   Table
 } from 'reactstrap';
 import CustomBreadcrumb from '../../../src/components/breadcrumb';
 import Course from '../../../models/course';
+import Skeleton from 'react-loading-skeleton';
 const gradeOptions = [
   {
     grade: 'O',
@@ -126,8 +128,15 @@ function GradeRange({ courses }) {
     semester: semesters[0].semester,
     courseCode: courses[0].courseCode
   });
+  const [loading, setLoading] = useState({
+    fetch: true,
+    gradeSubmission: false,
+    studentSubmission: false,
+    saveMarks: false
+  })
   const [marks, setMarks] = useState(students);
   function handleSubmit(e) {
+    setLoading(prev => ({ ...prev, gradeSubmission: true }))
     e.preventDefault();
     const body = {
       academicYear: filters.academicYear,
@@ -142,9 +151,13 @@ function GradeRange({ courses }) {
       })
       .catch(err => {
         console.log(err);
-      });
+      })
+      .finally(() => {
+        setLoading(prev => ({ ...prev, gradeSubmission: false }))
+      })
   }
   function handleUpdate(e) {
+    setLoading(prev => ({ ...prev, gradeSubmission: true }))
     e.preventDefault();
     const body = {
       academicYear: filters.academicYear,
@@ -162,9 +175,14 @@ function GradeRange({ courses }) {
       })
       .catch(err => {
         console.log(err);
+      })
+      .finally(() => {
+        setLoading(prev => ({ ...prev, gradeSubmission: false }))
       });
+
   }
   function handleAddStudent(e) {
+    setLoading(prev=>({...prev,studentSubmission:true}))
     e.preventDefault();
     setStudents([...students, student]);
     const body = {
@@ -186,7 +204,11 @@ function GradeRange({ courses }) {
       })
       .catch(err => {
         console.log(err);
-      });
+      })
+      .finally(()=>{
+    setLoading(prev=>({...prev,studentSubmission:false}))
+
+      })
   }
   function handleOnFilterChange(e) {
     setFilters({
@@ -217,6 +239,7 @@ function GradeRange({ courses }) {
     handleSaveMarks(assigned);
   }
   useEffect(() => {
+    setLoading(prev => ({ ...prev, fetch: true }))
     axios
       .get(
         `/api/admin/grade_range/${filters.academicYear}/${filters.semester}/${filters.courseCode}`
@@ -224,13 +247,17 @@ function GradeRange({ courses }) {
       .then(res => {
         setGradeRanges(res.data.ranges);
         setStudents(res.data.students);
+        setCreate(false);
       })
       .catch(err => {
         console.log(err);
         setCreate(true);
         setGradeRanges(gradeOptions);
         setStudents([]);
-      });
+      })
+      .finally(_ => {
+        setLoading(prev => ({ ...prev, fetch: false }))
+      })
   }, [filters]);
   return (
     <div>
@@ -294,97 +321,97 @@ function GradeRange({ courses }) {
         </Col>
       </Row>
       <Card>
-        <CardHeader onClick={()=>setAccordionConfig(prev=>({...prev,grade:!prev.grade}))}>
+        <CardHeader onClick={() => setAccordionConfig(prev => ({ ...prev, grade: !prev.grade }))}>
           <p>{accordionConfig.grade ?
-                <i class="bi bi-chevron-up"></i>
-                :
-                <i class="bi bi-chevron-down"></i>
-                }
-              <span className='mx-4'>Grade Range distribution</span></p>
+            <i class="bi bi-chevron-up"></i>
+            :
+            <i class="bi bi-chevron-down"></i>
+          }
+            <span className='mx-4'>Grade Range distribution</span></p>
         </CardHeader>
-        {accordionConfig.grade&&
-        <CardBody>
-          <Table borderless>
-            <tbody>
-              <tr>
-                <td>Course Code</td>
-                <td>
-                  <b>{filters.courseCode}</b>
-                </td>
-              </tr>
-              <tr>
-                <td>Semester</td>
-                <td>
-                  <b>{filters.semester}</b>
-                </td>
-              </tr>
-              <tr>
-                <td>Academic Year</td>
-                <td>
-                  <b>{filters.academicYear}</b>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-          <Form onSubmit={create ? handleSubmit : handleUpdate}>
-            {gradeRanges.map((grade, index) => (
-              <Row key={index}>
-                <Col>
-                  <FormGroup>
-                    <Label for="courseCode">Grade</Label>
-                    <Input
-                      id="grade"
-                      name="grade"
-                      placeholder="Grade"
-                      type="text"
-                      value={grade.grade}
-                      disabled
-                    />
-                  </FormGroup>
-                </Col>
-                <Col>
-                  <FormGroup>
-                    <Label for="min">Min</Label>
-                    <Input
-                      id="min"
-                      name="min"
-                      placeholder="Min"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={grade.min}
-                      onChange={e => {
-                        grade.min = e.target.value;
-                        setGradeRanges([...gradeRanges]);
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col>
-                  <FormGroup>
-                    <Label for="max">Max</Label>
-                    <Input
-                      id="max"
-                      name="max"
-                      placeholder="Max"
-                      type="number"
-                      min={0}
-                      max={100}
-                      value={grade.max}
-                      onChange={e => {
-                        grade.max = e.target.value;
-                        setGradeRanges([...gradeRanges]);
-                      }}
-                    />
-                  </FormGroup>
-                </Col>
-              </Row>
-            ))}
-            <Button type="submit" className="float-end">
-              Submit
-            </Button>
-          </Form>
-        </CardBody>}
+        {accordionConfig.grade &&
+          <CardBody>
+            <Table borderless>
+              <tbody>
+                <tr>
+                  <td>Course Code</td>
+                  <td>
+                    <b>{filters.courseCode}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Semester</td>
+                  <td>
+                    <b>{filters.semester}</b>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Academic Year</td>
+                  <td>
+                    <b>{filters.academicYear}</b>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+            <Form onSubmit={create ? handleSubmit : handleUpdate}>
+              {gradeRanges.map((grade, index) => (
+                <Row key={index}>
+                  <Col>
+                    <FormGroup>
+                      <Label for="courseCode">Grade</Label>
+                      <Input
+                        id="grade"
+                        name="grade"
+                        placeholder="Grade"
+                        type="text"
+                        value={grade.grade}
+                        disabled
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup>
+                      <Label for="min">Min</Label>
+                      <Input
+                        id="min"
+                        name="min"
+                        placeholder="Min"
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={grade.min}
+                        onChange={e => {
+                          grade.min = e.target.value;
+                          setGradeRanges([...gradeRanges]);
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup>
+                      <Label for="max">Max</Label>
+                      <Input
+                        id="max"
+                        name="max"
+                        placeholder="Max"
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={grade.max}
+                        onChange={e => {
+                          grade.max = e.target.value;
+                          setGradeRanges([...gradeRanges]);
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
+              ))}
+              <Button type="submit" className="float-end">
+                Submit
+              </Button>
+            </Form>
+          </CardBody>}
       </Card>
       {create ? (
         <>
@@ -436,7 +463,18 @@ function GradeRange({ courses }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {students.map((student, index) => (
+                  
+                  {loading.fetch
+                  ?
+                  <tr>
+                      <td><Skeleton/></td>
+                      <td><Skeleton/></td>
+                      <td width={100}>
+                      <Skeleton/>
+                      </td>
+                      <td><Skeleton/></td>
+                    </tr>
+                    :students.map((student, index) => (
                     <tr key={index}>
                       <td>{student.MIS}</td>
                       <td>{student.name}</td>

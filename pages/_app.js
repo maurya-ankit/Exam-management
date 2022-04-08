@@ -6,6 +6,7 @@ import NProgress from 'nprogress'
 import '../public/nprogress.css'
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   const router = useRouter();

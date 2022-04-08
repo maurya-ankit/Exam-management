@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton'
 const adminNavigation = [
   {
     title: 'Users',
@@ -80,7 +81,7 @@ const Sidebar = ({ showMobilemenu }) => {
       </div>
       <div className="pt-4 mt-2">
         <Nav vertical className="sidebarNav">
-          {navigation.map((navi, index) => (
+          {navigation.length ? navigation.map((navi, index) => (
             <NavItem key={index} className="sidenav-bg">
               <Link href={navi.href}>
                 <a
@@ -95,7 +96,7 @@ const Sidebar = ({ showMobilemenu }) => {
                 </a>
               </Link>
             </NavItem>
-          ))}
+          )): <Skeleton count={4} height={60} className="sidenav-bg" />}
         </Nav>
       </div>
     </div>
