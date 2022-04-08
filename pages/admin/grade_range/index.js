@@ -96,18 +96,18 @@ function getSemesters() {
         i === 1
           ? 'I'
           : i === 2
-          ? 'II'
-          : i === 3
-          ? 'III'
-          : i === 4
-          ? 'IV'
-          : i === 5
-          ? 'V'
-          : i === 6
-          ? 'VI'
-          : i === 7
-          ? 'VII'
-          : 'VIII'
+            ? 'II'
+            : i === 3
+              ? 'III'
+              : i === 4
+                ? 'IV'
+                : i === 5
+                  ? 'V'
+                  : i === 6
+                    ? 'VI'
+                    : i === 7
+                      ? 'VII'
+                      : 'VIII'
     });
   }
   return semesters;
@@ -116,6 +116,7 @@ function getSemesters() {
 function GradeRange({ courses }) {
   const [gradeRanges, setGradeRanges] = useState(gradeOptions);
   const [students, setStudents] = useState([]);
+  const [accordionConfig, setAccordionConfig] = useState({ grade: false, student: true })
   const [student, setStudent] = useState('');
   const academicYears = getAcademicYears();
   const semesters = getSemesters();
@@ -201,15 +202,12 @@ function GradeRange({ courses }) {
   }
   function assignGrades() {
     // based on grade reanges, assign grades to students via marks
-    console.log(gradeRanges);
     const assigned = students.map(student => {
       for (let i = 0; i < gradeRanges.length; i++) {
-        console.log(i, gradeRanges[i].min, gradeRanges[i].max, student.marks);
         if (
           gradeRanges[i].min <= student.marks &&
           gradeRanges[i].max >= student.marks
         ) {
-          console.log(gradeRanges[i]);
           student.grade = gradeRanges[i].grade;
           break;
         }
@@ -224,7 +222,6 @@ function GradeRange({ courses }) {
         `/api/admin/grade_range/${filters.academicYear}/${filters.semester}/${filters.courseCode}`
       )
       .then(res => {
-        console.log(res);
         setGradeRanges(res.data.ranges);
         setStudents(res.data.students);
       })
@@ -297,6 +294,15 @@ function GradeRange({ courses }) {
         </Col>
       </Row>
       <Card>
+        <CardHeader onClick={()=>setAccordionConfig(prev=>({...prev,grade:!prev.grade}))}>
+          <p>{accordionConfig.grade ?
+                <i class="bi bi-chevron-up"></i>
+                :
+                <i class="bi bi-chevron-down"></i>
+                }
+              <span className='mx-4'>Grade Range distribution</span></p>
+        </CardHeader>
+        {accordionConfig.grade&&
         <CardBody>
           <Table borderless>
             <tbody>
@@ -378,7 +384,7 @@ function GradeRange({ courses }) {
               Submit
             </Button>
           </Form>
-        </CardBody>
+        </CardBody>}
       </Card>
       {create ? (
         <>

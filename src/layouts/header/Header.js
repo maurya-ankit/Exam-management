@@ -37,7 +37,7 @@ const Header = ({ showMobmenu }) => {
   }
 
   return (
-    <Navbar color="primary" dark expand="md">
+    <Navbar color="primary" expand="md" className='sticky-top'>
       <div className="d-flex align-items-center">
         <NavbarBrand href="/" className="d-lg-none">
           <i className="bi bi-hexagon-fill"></i>

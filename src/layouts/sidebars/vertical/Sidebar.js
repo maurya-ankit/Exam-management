@@ -68,7 +68,7 @@ const Sidebar = ({ showMobilemenu }) => {
   }, [session]);
 
   return (
-    <div className="p-3">
+    <div className="p-3 sticky-top">
       <div className="d-flex align-items-center">
         <Logo />
         <Button
