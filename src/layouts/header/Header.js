@@ -59,7 +59,7 @@ const Header = ({ showMobmenu }) => {
           {/* <DropdownItem>Edit Profile</DropdownItem>  */}
           <DropdownItem divider />
           <DropdownItem
-            onClick={() => (status === 'loading' ? signOut() : undefined)}
+            onClick={() => (status === 'loading' ?  undefined:signOut())}
           >
             {status === 'loading' ? <Skeleton /> : 'Logout'}
           </DropdownItem>

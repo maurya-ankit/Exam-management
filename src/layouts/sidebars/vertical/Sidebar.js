@@ -45,7 +45,6 @@ const Sidebar = ({ showMobilemenu }) => {
   const { data: session } = useSession();
   const location = curl.pathname;
   const [navigation, setNavigation] = useState([]);
-  console.log(session);
   useEffect(() => {
     switch (session?.user.role) {
       case 'admin': {
