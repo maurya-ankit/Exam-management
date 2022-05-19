@@ -16,6 +16,7 @@ import {
   Table
 } from 'reactstrap';
 
+import databaseConnect from '../../../lib/databaseConnect';
 import Course from '../../../models/course';
 import CustomBreadcrumb from '../../../src/components/breadcrumb';
 const gradeOptions = [
@@ -522,6 +523,7 @@ function GradeRange({ courses }) {
 export default GradeRange;
 
 export async function getServerSideProps() {
+  await databaseConnect();
   let courses = await Course.find();
   courses = JSON.parse(JSON.stringify(courses));
   return {
