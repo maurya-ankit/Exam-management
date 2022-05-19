@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import {
   Button,
@@ -20,10 +20,14 @@ const Header = ({ showMobmenu }) => {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const { data: session, status } = useSession();
   const toggle = () => setDropdownOpen(previousState => !previousState);
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/api/auth/signin');
+    }
+  }, [status])
   if (status === 'unauthenticated') {
-    return router.push('/api/auth/signin');
+    return null;
   }
-
   return (
     <Navbar color="primary" expand="md" className="sticky-top">
       <div className="d-flex align-items-center">
@@ -59,7 +63,7 @@ const Header = ({ showMobmenu }) => {
           {/* <DropdownItem>Edit Profile</DropdownItem>  */}
           <DropdownItem divider />
           <DropdownItem
-            onClick={() => (status === 'loading' ?  undefined:signOut())}
+            onClick={() => (status === 'loading' ? undefined : signOut())}
           >
             {status === 'loading' ? <Skeleton /> : 'Logout'}
           </DropdownItem>
