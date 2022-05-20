@@ -12,7 +12,7 @@ const newsfeed = {
   icon: 'bi bi-file-earmark-bar-graph'
 };
 const gradeRange = {
-  title: 'Grade Range',
+  title: 'Students In course',
   href: '/admin/grade_range',
   icon: 'bi bi-bar-chart-line'
 };
@@ -22,7 +22,7 @@ const students = {
   icon: 'bi bi-person-lines-fill'
 };
 const courses = {
-  title: 'Add Course',
+  title: 'Course',
   href: '/admin/add_course',
   icon: 'bi bi-gear'
 };
@@ -36,7 +36,7 @@ const result = {
   href: '/result',
   icon: 'bi bi-file-earmark-bar-graph'
 };
-const adminNavigation = [users, courses, gradeRange, students];
+const adminNavigation = [users, courses, students, gradeRange];
 const facultyNavigation = [newsfeed, gradeRange];
 const studentNavigation = [newsfeed, result];
 

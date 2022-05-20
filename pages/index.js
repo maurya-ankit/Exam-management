@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { Alert, Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
+import { Row } from 'reactstrap';
 
 export default function Home() {
   return (
     <div>
       <Row>
-        <Col>
+        Click on Link from sidebar
+        {/* <Col>
           <Card>
             <CardHeader>Result</CardHeader>
             <CardBody>
@@ -36,7 +36,7 @@ export default function Home() {
               </CardBody>
             </Card>
           </Link>
-        </Col>
+        </Col> */}
       </Row>
     </div>
   );
