@@ -36,7 +36,12 @@ const result = {
   href: '/result',
   icon: 'bi bi-file-earmark-bar-graph'
 };
-const adminNavigation = [users, courses, students, gradeRange];
+const newsfeed_manager = {
+  title: 'Newsfeed manager',
+  href: '/admin/newsfeed_manager',
+  icon: 'bi bi-file-earmark-bar-graph'
+};
+const adminNavigation = [newsfeed_manager, users, courses, students, gradeRange];
 const facultyNavigation = [newsfeed, gradeRange];
 const studentNavigation = [newsfeed, result];
 
