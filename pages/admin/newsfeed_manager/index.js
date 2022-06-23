@@ -41,6 +41,7 @@ const programOptions = ['B.Tech', 'M.Tech'];
 const branchOptions = ['CSE', 'ECE'];
 
 function Index({ newsfeed, groups }) {
+    const [newsFeed, setNewsFeed] = useState(newsfeed || [])
     const initFormData = {
         title: "",
         description: "",
@@ -59,7 +60,14 @@ function Index({ newsfeed, groups }) {
         axios.post('/api/admin/newsfeed', data)
             .then(res => {
                 console.log(res.data);
-                setFormData(initFormData)
+                setFormData(prev => ({ ...prev, ...initFormData }))
+                axios.get('/api/admin/newsfeed')
+                    .then(res => {
+                        setNewsFeed(res.data);
+                    })
+                    .catch(() => {
+
+                    })
             })
             .catch(err => {
                 console.log(err);
@@ -134,7 +142,7 @@ function Index({ newsfeed, groups }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {newsfeed.map((data) => (<tr>
+                                    {newsFeed.map((data) => (<tr>
                                         <td>{data.title}</td>
                                         <td>{data.postedAt}</td>
                                         <td>{data.group}</td>
