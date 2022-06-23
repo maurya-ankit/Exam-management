@@ -15,6 +15,7 @@ import {
     Table
 } from 'reactstrap';
 import databaseConnect from '../../../lib/databaseConnect';
+import Newsfeed from '../../../models/newsfeed';
 import Group from '../../../models/group';
 
 import CustomBreadcrumb from '../../../src/components/breadcrumb';
@@ -39,8 +40,32 @@ const programOptions = ['B.Tech', 'M.Tech'];
 
 const branchOptions = ['CSE', 'ECE'];
 
-function Index({ groups }) {
-
+function Index({ newsfeed, groups }) {
+    const initFormData = {
+        title: "",
+        description: "",
+        group: "",
+        seen: [],
+        postedAt: "",
+        comments: [],
+        slug: []
+    }
+    const [formData, setFormData] = useState(initFormData)
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const data = { ...formData }
+        data.postedAt = new Date().toLocaleString();
+        console.log(data)
+        axios.post('/api/admin/newsfeed', data)
+            .then(res => {
+                console.log(res.data);
+                setFormData(initFormData)
+            })
+            .catch(err => {
+                console.log(err);
+            }
+            )
+    }
     return (
         <div>
             <CustomBreadcrumb items={breadcrumbConfig} />
@@ -52,13 +77,13 @@ function Index({ groups }) {
                             <strong>News Feed</strong>
                         </CardHeader>
                         <CardBody>
-                            <Form action="" method="post" encType="multipart/form-data" className="form-horizontal">
+                            <Form onSubmit={handleSubmit} className="form-horizontal">
                                 <FormGroup row>
                                     <Col md="3">
                                         <Label htmlFor="text-input">Title</Label>
                                     </Col>
                                     <Col xs="12" md="9">
-                                        <Input type="text" id="text-input" name="text-input" placeholder="Title" />
+                                        <Input onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} type="text" id="text-input" name="text-input" placeholder="Title" />
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -66,15 +91,7 @@ function Index({ groups }) {
                                         <Label htmlFor="text-input">Description</Label>
                                     </Col>
                                     <Col xs="12" md="9">
-                                        <Input type="textarea" id="text-input" name="text-input" placeholder="Description" />
-                                    </Col>
-                                </FormGroup>
-                                <FormGroup row>
-                                    <Col md="3">
-                                        <Label htmlFor="text-input">Image</Label>
-                                    </Col>
-                                    <Col xs="12" md="9">
-                                        <Input type="file" id="text-input" name="text-input" placeholder="Image" />
+                                        <Input onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} type="textarea" id="text-input" name="text-input" placeholder="Description" />
                                     </Col>
                                 </FormGroup>
                                 <FormGroup row>
@@ -82,7 +99,7 @@ function Index({ groups }) {
                                         <Label htmlFor="text-input">Group</Label>
                                     </Col>
                                     <Col >
-                                        <Input type="select" id="text-input" name="text-input" placeholder="Year">
+                                        <Input onChange={(e) => setFormData(prev => ({ ...prev, group: e.target.value }))} type="select" id="text-input" name="text-input" placeholder="Year">
 
                                             {groups.map(element => (<option>{element.name}</option>))}
                                         </Input>
@@ -91,7 +108,7 @@ function Index({ groups }) {
                                         <Link href={`/admin/newsfeed_manager/group`} >Add/Edit Group</Link>
                                     </Col>
                                 </FormGroup>
-                                <Button>
+                                <Button type='submit'>
                                     Post
                                 </Button>
                             </Form>
@@ -111,26 +128,18 @@ function Index({ groups }) {
                                 <thead>
                                     <tr>
                                         <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Image</th>
-                                        <th>Link</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>Year</th>
-                                        <th>Program</th>
+                                        <th>Posted At</th>
+                                        <th>Group</th>
+                                        <th>Navigation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>@mdo</td>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>@mdo</td>
-                                        <td>Mark</td>
-                                    </tr>
+                                    {newsfeed.map((data) => (<tr>
+                                        <td>{data.title}</td>
+                                        <td>{data.postedAt}</td>
+                                        <td>{data.group}</td>
+                                        <td><Link href={`/admin/newsfeed_manager/${data._id}`}>Go to details</Link></td>
+                                    </tr>))}
                                 </tbody>
                             </Table>
                         </CardBody>
@@ -145,9 +154,11 @@ export default Index;
 
 export async function getServerSideProps(context) {
     await databaseConnect();
-    const groups = await Group.find()
+    const newsfeed = await Newsfeed.find();
+    const groups = await Group.find();
     return {
         props: {
+            newsfeed: JSON.parse(JSON.stringify(newsfeed)),
             groups: JSON.parse(JSON.stringify(groups))
         }, // will be passed to the page component as props
     }
