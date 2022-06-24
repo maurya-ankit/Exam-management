@@ -17,6 +17,7 @@ import {
 import databaseConnect from '../../../lib/databaseConnect';
 import Newsfeed from '../../../models/newsfeed';
 import Group from '../../../models/group';
+import ReactMarkdown from "react-markdown";
 
 import CustomBreadcrumb from '../../../src/components/breadcrumb';
 const breadcrumbConfig = [
@@ -102,6 +103,7 @@ function Index({ newsfeed, groups }) {
                                         <Input onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} type="textarea" id="text-input" name="text-input" placeholder="Description" />
                                     </Col>
                                 </FormGroup>
+                                <ReactMarkdown>{formData.description}</ReactMarkdown>
                                 <FormGroup row>
                                     <Col md="3">
                                         <Label htmlFor="text-input">Group</Label>
@@ -142,7 +144,7 @@ function Index({ newsfeed, groups }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {newsFeed.map((data) => (<tr>
+                                    {newsFeed.reverse().map((data) => (<tr>
                                         <td>{data.title}</td>
                                         <td>{data.postedAt}</td>
                                         <td>{data.group}</td>

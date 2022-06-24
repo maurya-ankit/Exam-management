@@ -3,7 +3,7 @@ import { Button, Card, CardBody, CardFooter, CardSubtitle, CardText, CardTitle, 
 import databaseConnect from '../../lib/databaseConnect';
 import Newsfeed from '../../models/newsfeed';
 import bg1 from '../../src/assets/images/bg/bg1.jpg';
-
+import ReactMarkdown from "react-markdown";
 function Index({ newsfeed }) {
     if (newsfeed)
         return <>
@@ -12,7 +12,8 @@ function Index({ newsfeed }) {
                 <CardBody>
                     <CardTitle tag="h5">{newsfeed.title}</CardTitle>
                     {/* <CardSubtitle>{subtitle}</CardSubtitle> */}
-                    <CardText className="mt-3">{newsfeed.description}</CardText>
+
+                    <CardText className="mt-3"><ReactMarkdown>{newsfeed.description}</ReactMarkdown></CardText>
                     {/* <CardFooter>
                         <Form>
                             <Row style={{

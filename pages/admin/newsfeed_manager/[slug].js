@@ -6,6 +6,7 @@ import { Button, Card, CardBody, CardFooter, CardSubtitle, CardText, CardTitle, 
 import databaseConnect from '../../../lib/databaseConnect';
 import Newsfeed from '../../../models/newsfeed';
 import bg1 from '../../../src/assets/images/bg/bg1.jpg';
+import ReactMarkdown from "react-markdown";
 
 function Index({ newsfeed }) {
     const [newsfeedData, setNewsFeedData] = useState(newsfeed)
@@ -64,6 +65,7 @@ function Index({ newsfeed }) {
                                 onChange={(e) => setNewsFeedData(prev => ({ ...prev, description: e.target.value }))}
                             >
                             </Input>
+                            <ReactMarkdown>{newsfeedData.description}</ReactMarkdown>
                         </CardText>
 
                     </CardBody>

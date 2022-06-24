@@ -22,7 +22,7 @@ function Index({ newsfeed }) {
     }))
     return <>
         <Row>
-            {BlogData?.map(blg => (
+            {BlogData.reverse()?.map(blg => (
                 <Col sm="6" lg="6" xl="3" key={blg.title}>
                     <Blog
                         image={blg.image}
